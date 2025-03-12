@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.sourcery.km.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
