@@ -14,3 +14,28 @@ Command line operation:
 - Run tests: `./gradlew test`
 - Build the App: `./gradlew build`
 
+---  
+
+## **🐳 Running with Docker**
+
+### **1️⃣ Start Containers**
+To start **PostgreSQL** and **Azure Storage Emulator**, run:
+```sh  
+docker-compose up -d  
+```  
+This will start:  
+✅ PostgreSQL database  
+✅ Azurite (Azure Storage Emulator)
+
+### **2️⃣ Stop Containers**
+To stop the running containers:
+```sh  
+docker-compose down  
+```  
+
+### **3️⃣ Check Logs**
+```sh  
+docker-compose logs -f  
+```  
+
+--- 
