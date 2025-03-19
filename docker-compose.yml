@@ -1,0 +1,30 @@
+version: '3.5'
+
+services:
+  db:
+    image: postgres:17-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite
+    ports:
+      - "10000:10000"  # Blob Storage
+      - "10001:10001"  # Queue Storage
+      - "10002:10002"  # Table Storage
+    environment:
+      - AZURITE_ACCOUNTS=myaccount=mykey
+    volumes:
+      - azurite-data:/data
+    command: azurite --blobPort 10000 --queuePort 10001 --tablePort 10002
+
+volumes:
+  pgdata:
+  azurite-data:
