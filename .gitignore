@@ -90,3 +90,6 @@ out/
 
 # Ignore Gradle build output directory
 build
+
+# Ignore .env file (environment variables)
+.env
