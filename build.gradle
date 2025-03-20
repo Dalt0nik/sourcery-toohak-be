@@ -2,6 +2,9 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.2'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'checkstyle'
+	id 'pmd'
+	id 'com.github.spotbugs' version '6.1.7'
 }
 
 group = 'com.example'
@@ -14,7 +17,12 @@ java {
 }
 
 jar {
-    enabled = false
+	enabled = false
+}
+
+checkstyle {
+	toolVersion = "10.12.4"
+	configFile = file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
 }
 
 repositories {
@@ -27,6 +35,12 @@ dependencies {
 	implementation 'com.azure:azure-storage-blob:12.11.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// exclude google-collections to only use Guava
+	checkstyle("com.puppycrawl.tools:checkstyle:10.12.4") {
+		exclude group: "com.google.collections", module: "google-collections"
+	}
+	checkstyle("com.google.guava:guava:32.0.1-jre")
 }
 
 tasks.named('test') {
