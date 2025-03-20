@@ -38,7 +38,26 @@ docker-compose down
 docker-compose logs -f  
 ```  
 
---- 
+---
+## Static Analysis Tools
+This project is configured with Checkstyle, PMD, and SpotBugs for static code analysis.
+
+### Running Static Analysis
+You can run all static analysis checks using:
+```sh
+./gradlew check
+```
+This will execute:
+
+- Checkstyle: Ensures code style consistency.
+- PMD: Detects potential bugs and bad practices.
+- SpotBugs: Finds security and performance issues.
+
+To run them individually:
+
+- Checkstyle: `./gradlew checkstyleMain`
+- PMD: `./gradlew pmdMain`
+- SpotBugs: `./gradlew spotbugsMain`
 
 ## **🔒 Secret variables**
 
