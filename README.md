@@ -39,3 +39,7 @@ docker-compose logs -f
 ```  
 
 --- 
+
+## **🔒 Secret variables**
+
+All secret keys are in team's Discord server, `#secrets` channel    
