@@ -93,3 +93,5 @@ build
 
 # Ignore .env file (environment variables)
 .env
+
+secrets.properties

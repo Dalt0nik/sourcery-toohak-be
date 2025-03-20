@@ -58,3 +58,7 @@ To run them individually:
 - Checkstyle: `./gradlew checkstyleMain`
 - PMD: `./gradlew pmdMain`
 - SpotBugs: `./gradlew spotbugsMain`
+
+## **🔒 Secret variables**
+
+All secret keys are in team's Discord server, `#secrets` channel    
