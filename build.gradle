@@ -1,49 +1,53 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.4.2'
-	id 'io.spring.dependency-management' version '1.1.7'
-	id 'checkstyle'
-	id 'pmd'
-	id 'com.github.spotbugs' version '6.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.4.2'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'checkstyle'
+    id 'pmd'
+    id 'com.github.spotbugs' version '6.1.7'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 jar {
-	enabled = false
+    enabled = false
 }
 
 checkstyle {
-	toolVersion = "10.12.4"
-	configFile = file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
+    toolVersion = "10.12.4"
+    configFile = file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.postgresql:postgresql:42.7.5'
-	implementation 'com.azure:azure-storage-blob:12.11.0'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
-
-	// exclude google-collections to only use Guava
-	checkstyle("com.puppycrawl.tools:checkstyle:10.12.4") {
-		exclude group: "com.google.collections", module: "google-collections"
-	}
-	checkstyle("com.google.guava:guava:32.0.1-jre")
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
+    implementation 'org.liquibase:liquibase-core'
+    implementation 'com.azure:azure-storage-blob:12.11.0'
+    runtimeOnly 'org.postgresql:postgresql:42.7.5'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // exclude google-collections to only use Guava
+    checkstyle("com.puppycrawl.tools:checkstyle:10.12.4") {
+        exclude group: "com.google.collections", module: "google-collections"
+    }
+    checkstyle("com.google.guava:guava:32.0.1-jre")
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
