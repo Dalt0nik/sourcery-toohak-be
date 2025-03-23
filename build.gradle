@@ -36,11 +36,13 @@ dependencies {
     implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
     implementation 'org.liquibase:liquibase-core'
     implementation 'com.azure:azure-storage-blob:12.11.0'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     runtimeOnly 'org.postgresql:postgresql:42.7.5'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
     // exclude google-collections to only use Guava
     checkstyle("com.puppycrawl.tools:checkstyle:10.12.4") {
         exclude group: "com.google.collections", module: "google-collections"
