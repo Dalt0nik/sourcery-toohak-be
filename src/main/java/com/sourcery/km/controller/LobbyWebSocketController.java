@@ -14,6 +14,14 @@ public class LobbyWebSocketController {
         this.lobbyService = lobbyService;
     }
 
+    /**
+     * Receives an answer from a player via WebSocket and processes it.
+     *
+     * This method listens to the "/app/answer" destination. The answer data is expected
+     * to include the lobby ID, player ID, and the selected answer.
+     *
+     * @param answer The player's answer including lobby and player info.
+     */
     @MessageMapping("/answer")
     public void submitAnswer(AnswerDTO answer) {
         lobbyService.processPlayerAnswer(answer);
