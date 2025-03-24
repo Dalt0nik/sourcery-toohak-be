@@ -25,10 +25,6 @@ checkstyle {
     configFile = file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
 }
 
-//spotbugs {
-    //ignoreFailures = true
-//}
-
 repositories {
     mavenCentral()
 }
@@ -47,11 +43,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    compileOnly 'org.projectlombok:lombok:1.18.36'
-    annotationProcessor 'org.projectlombok:lombok:1.18.36'
-    //testCompileOnly 'org.projectlombok:lombok:1.18.36'
-    //testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
 
     // exclude google-collections to only use Guava
     checkstyle("com.puppycrawl.tools:checkstyle:10.12.4") {
