@@ -1,4 +1,4 @@
-package com.sourcery.km.DTO;
+package com.sourcery.km.dto;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package com.sourcery.km.controller;
 
-import com.sourcery.km.DTO.NewQuestionDTO;
+import com.sourcery.km.dto.NewQuestionDTO;
 import com.sourcery.km.service.LobbyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

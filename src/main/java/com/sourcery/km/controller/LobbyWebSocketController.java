@@ -1,6 +1,6 @@
 package com.sourcery.km.controller;
 
-import com.sourcery.km.DTO.AnswerDTO;
+import com.sourcery.km.dto.AnswerDTO;
 import com.sourcery.km.service.LobbyService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;

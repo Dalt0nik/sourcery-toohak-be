@@ -1,7 +1,7 @@
 package com.sourcery.km.service;
 
-import com.sourcery.km.DTO.AnswerDTO;
-import com.sourcery.km.DTO.NewQuestionDTO;
+import com.sourcery.km.dto.AnswerDTO;
+import com.sourcery.km.dto.NewQuestionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
