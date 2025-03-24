@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 public class AnswerController {
 
-  @GetMapping("/api")
-  public String getAnswer() {
-    return "Hello from Spring Boot!!";
-  }
+    @GetMapping()
+    public String getAnswer() {
+        return "Hello from Spring Boot!!";
+    }
 }
