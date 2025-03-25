@@ -2,18 +2,16 @@ package com.sourcery.km.controller;
 
 import com.sourcery.km.dto.NewQuestionDTO;
 import com.sourcery.km.service.LobbyService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/lobby")
+@RequestMapping("/lobbies")
+@RequiredArgsConstructor
 public class LobbyController {
 
     private final LobbyService lobbyService;
-
-    public LobbyController(LobbyService lobbyService) {
-        this.lobbyService = lobbyService;
-    }
 
     /**
      * Starts the game in the specified lobby and notifies all subscribed clients via WebSocket.
@@ -22,11 +20,9 @@ public class LobbyController {
      * @return A response confirming that the game has started.
      */
     @PostMapping("/{lobbyId}/start")
-    public ResponseEntity<String> startGame(@PathVariable String lobbyId) {
+    public void startGame(@PathVariable String lobbyId) {
 
         lobbyService.sendGameUpdate(lobbyId);
-
-        return ResponseEntity.ok("Game started and players notified!");
     }
 
     /**

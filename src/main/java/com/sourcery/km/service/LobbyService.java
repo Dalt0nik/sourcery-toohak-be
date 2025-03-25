@@ -2,10 +2,12 @@ package com.sourcery.km.service;
 
 import com.sourcery.km.dto.AnswerDTO;
 import com.sourcery.km.dto.NewQuestionDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class LobbyService {
 
@@ -38,7 +40,9 @@ public class LobbyService {
      */
     public void processPlayerAnswer(AnswerDTO answer)
     {
-        System.out.println("Lobby:" + answer.getLobbyId() + ", player: " + answer.getPlayerId() +
-                ", answer: " + answer.getAnswer());
+        log.info("Lobby: {}, player: {}, answer: {}",
+                answer.getLobbyId(),
+                answer.getPlayerId(),
+                answer.getAnswer());
     }
 }
