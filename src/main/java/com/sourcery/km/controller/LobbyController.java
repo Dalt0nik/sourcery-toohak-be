@@ -12,23 +12,12 @@ public class LobbyController {
 
     private final LobbyService lobbyService;
 
-    /**
-     * Starts the game in the specified lobby and notifies all subscribed clients via WebSocket.
-     *
-     * @param lobbyId The ID of the lobby where the game is to be started.
-     */
     @PostMapping("/{lobbyId}/start")
     public void startGame(@PathVariable String lobbyId) {
 
         lobbyService.sendGameUpdate(lobbyId);
     }
 
-    /**
-     * Sends a new question to all players in the specified lobby via WebSocket.
-     *
-     * @param lobbyId The ID of the lobby where the question should be sent.
-     * @param question The question data to send, including lobbyId and question text.
-     */
     @PostMapping("/{lobbyId}")
     public void sendQuestion(@PathVariable String lobbyId, @RequestBody NewQuestionDTO question) {
 
