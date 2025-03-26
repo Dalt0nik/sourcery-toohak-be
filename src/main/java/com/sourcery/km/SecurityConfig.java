@@ -17,6 +17,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(withDefaults())
