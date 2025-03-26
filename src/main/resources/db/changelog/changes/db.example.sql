@@ -1,11 +1,11 @@
 -- liquibase formatted sql
--- Šito reikia viršuje kad nusakytu failą, nes komentarai irgi yra skaitomi programos.
+-- This always needs to be up top for liquibase
 
 -- A changeset in Liquibase is a single unit of change that describes one or more database modifications (such as creating a table, altering a column, or inserting data).
 -- It is identified with "changeset author:id"
--- Siūlyčiau daryti taip: jyra-issue:triženklis-numeris
+-- For this project the suggestion would be to do it like this: jyra-issue:3-digit-number
 
--- Pvz.:
+-- EXAMPLE:
 -- changeset JSF2025S-8:001
 -- comment: Comment nr. 1
 -- comment: Comment nr. 2
