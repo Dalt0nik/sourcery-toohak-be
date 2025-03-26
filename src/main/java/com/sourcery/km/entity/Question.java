@@ -2,7 +2,6 @@ package com.sourcery.km.entity;
 
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -10,15 +9,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Quiz {
+public class Question {
     @Builder.Default
     private UUID id = UUID.randomUUID();
 
-    private UUID createdBy;
+    private UUID quizId;
+
+    private UUID imageId;
 
     private String title;
-
-    private String description;
-
-    private List<Question> questions;
 }
