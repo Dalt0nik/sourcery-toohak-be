@@ -25,6 +25,10 @@ checkstyle {
     configFile = file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
 }
 
+spotbugs {
+    excludeFilter.set(file("${rootProject.projectDir}/config/spotbug/spotbugs-exclude.xml"))
+}
+
 repositories {
     mavenCentral()
 }
@@ -36,6 +40,8 @@ dependencies {
     implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
     implementation 'org.liquibase:liquibase-core'
     implementation 'com.azure:azure-storage-blob:12.11.0'
+    implementation "me.paulschwarz:spring-dotenv:4.0.0"
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
     implementation 'com.github.spotbugs:spotbugs-annotations:4.7.3'
     runtimeOnly 'org.postgresql:postgresql:42.7.5'
@@ -43,7 +49,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
     // exclude google-collections to only use Guava
     checkstyle("com.puppycrawl.tools:checkstyle:10.12.4") {
         exclude group: "com.google.collections", module: "google-collections"

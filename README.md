@@ -8,6 +8,13 @@
 
 ### Setup
 
+To compile you need an environment variable in `.env`.
+You can find it in discord `#secrets` channel.
+
+```
+OAUTH_CLIENT_SECRET=${code-from-discord}
+```
+
 **It's recommended to use built-in Intellij tools to run/build the app**
 
 Command line operation:
@@ -79,6 +86,7 @@ All secret keys are in team's Discord server, `#secrets` channel
 ## database
 
 All migrations are stored in `src/main/resources/db/changelog/`. They will be run on application start.
-To add a new migration change `db.changelog-master.yaml` to include the new file in `changes/` folder and write your sql script.
+To add a new migration change `db.changelog-master.yaml` to include the new file in `changes/` folder and write your sql
+script.
 An example is given in `changes/db.example.sql`
 

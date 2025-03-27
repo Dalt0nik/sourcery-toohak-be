@@ -12,7 +12,7 @@ public interface QuestionMapper {
 
     @Insert({
         "<script>",
-        "INSERT INTO questions (question_id, quiz_id, image_id, title) VALUES ",
+        "INSERT INTO questions (id, quiz_id, image, title) VALUES ",
         "<foreach collection='questions' item='question' separator=','>",
         "(#{question.id}, #{question.quizId}, #{question.imageId}, #{question.title})",
         "</foreach>",

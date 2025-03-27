@@ -14,6 +14,7 @@ public class Quiz {
     @Builder.Default
     private UUID id = UUID.randomUUID();
 
+    // user id
     private UUID createdBy;
 
     private String title;

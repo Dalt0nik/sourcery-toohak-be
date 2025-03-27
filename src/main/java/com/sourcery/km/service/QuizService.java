@@ -6,14 +6,12 @@ import com.sourcery.km.dto.quiz.QuizDTO;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.mapper.QuestionMapper;
 import com.sourcery.km.mapper.QuizMapper;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@SuppressFBWarnings("EI2")
 public class QuizService {
     private final QuizMapper quizMapper;
 

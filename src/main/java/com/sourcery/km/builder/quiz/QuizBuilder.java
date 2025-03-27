@@ -15,7 +15,7 @@ public class QuizBuilder {
                 .createdBy(quizDTO.getCreatedBy())
                 .title(quizDTO.getTitle())
                 .description(quizDTO.getDescription())
-                .questions(quizDTO.getQuestions())
+                .questions(QuestionBuilder.toQuestionEntities(quizDTO.getQuestions()))
                 .build();
     }
 
@@ -25,7 +25,7 @@ public class QuizBuilder {
                 .createdBy(quiz.getCreatedBy())
                 .title(quiz.getTitle())
                 .description(quiz.getDescription())
-                .questions(QuestionBuilder.questionDTOS(quiz.getQuestions()))
+                .questions(QuestionBuilder.toQuestionDTOS(quiz.getQuestions()))
                 .build();
     }
 

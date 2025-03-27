@@ -1,6 +1,6 @@
 package com.sourcery.km.dto.quiz;
 
-import com.sourcery.km.entity.Question;
+import com.sourcery.km.dto.question.CreateQuestionDTO;
 import lombok.Builder;
 import lombok.Value;
 
@@ -16,6 +16,5 @@ public class CreateQuizDTO {
 
     String description;
 
-    List<Question> questions;
-
+    List<CreateQuestionDTO> questions;
 }

@@ -26,12 +26,21 @@ public class QuestionBuilder {
                 .build();
     }
 
-    public static List<QuestionDTO> questionDTOS(List<Question> questions) {
+    public static List<QuestionDTO> toQuestionDTOS(List<Question> questions) {
         if (questions == null) {
             return null;
         }
         return questions.stream()
                 .map(QuestionBuilder::toQuestionDTO)
+                .toList();
+    }
+
+    public static List<Question> toQuestionEntities(List<CreateQuestionDTO> questions) {
+        if (questions == null) {
+            return null;
+        }
+        return questions.stream()
+                .map(QuestionBuilder::toQuestionEntity)
                 .toList();
     }
 }
