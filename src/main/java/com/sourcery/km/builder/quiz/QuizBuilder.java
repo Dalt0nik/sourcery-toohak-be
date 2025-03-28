@@ -25,6 +25,8 @@ public class QuizBuilder {
                 .createdBy(quiz.getCreatedBy())
                 .title(quiz.getTitle())
                 .description(quiz.getDescription())
+                .createdAt(quiz.getCreatedAt())
+                .updatedAt(quiz.getUpdatedAt())
                 .questions(QuestionBuilder.toQuestionDTOS(quiz.getQuestions()))
                 .build();
     }

@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan("com.sourcery.km.mapper")
+@MapperScan("com.sourcery.km.repository")
 public class MyBatisConfig {
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
 
-        // uzregistruoti UUID tvarkyma
+        // register UUID handling
         SqlSessionFactory sqlSessionFactory = sessionFactory.getObject();
         if (sqlSessionFactory != null) {
             TypeHandlerRegistry typeHandlerRegistry = sqlSessionFactory.getConfiguration().getTypeHandlerRegistry();

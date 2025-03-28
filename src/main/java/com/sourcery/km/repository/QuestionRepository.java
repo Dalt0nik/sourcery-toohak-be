@@ -1,14 +1,16 @@
-package com.sourcery.km.mapper;
+package com.sourcery.km.repository;
 
 import com.sourcery.km.entity.Question;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Mapper
-public interface QuestionMapper {
+@Repository
+public interface QuestionRepository {
 
     @Insert({
         "<script>",
