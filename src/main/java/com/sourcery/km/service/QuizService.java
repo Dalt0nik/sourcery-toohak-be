@@ -1,23 +1,33 @@
 package com.sourcery.km.service;
 
-import com.sourcery.km.builder.QuizBuilder;
-import com.sourcery.km.dto.CreateQuizDTO;
+import com.sourcery.km.builder.quiz.QuizBuilder;
+import com.sourcery.km.dto.quiz.CreateQuizDTO;
+import com.sourcery.km.dto.quiz.QuizDTO;
 import com.sourcery.km.entity.Quiz;
-import com.sourcery.km.mapper.QuizMapper;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.sourcery.km.repository.QuestionRepository;
+import com.sourcery.km.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@SuppressFBWarnings("EI2")
 public class QuizService {
-    private final QuizMapper quizMapper;
+
+    private final QuizRepository quizRepository;
+
+    private final QuestionRepository questionRepository;
 
     @Transactional
-    public void createQuiz(CreateQuizDTO quizDTO) {
+    public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
         Quiz quiz = QuizBuilder.toQuizEntity(quizDTO);
-        quizMapper.insertQuiz(quiz);
+        quizRepository.insertQuiz(quiz);
+
+        if (quiz.getQuestions() != null && !quiz.getQuestions().isEmpty()) {
+            quiz.getQuestions().forEach(question -> question.setQuizId(quiz.getId()));
+            questionRepository.insertQuestions(quiz.getQuestions());
+        }
+
+        return QuizBuilder.toQuizDTO(quiz);
     }
 }

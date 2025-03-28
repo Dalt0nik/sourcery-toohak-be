@@ -1,4 +1,4 @@
-package com.sourcery.km.config;
+package com.sourcery.km.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
