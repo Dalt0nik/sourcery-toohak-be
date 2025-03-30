@@ -1,6 +1,6 @@
 package com.sourcery.km.service;
 
-import com.ctc.wstx.shaded.msv_core.driver.textui.Debug;
+import com.sourcery.km.builder.user.UserBuilder;
 import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.entity.User;
 import com.sourcery.km.repository.UserRepository;
@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,8 +34,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    @Transactional
-    public UserInfoDTO getUserInfo(Jwt token) {
+    public UserInfoDTO getUserInfoFromAuth(Jwt token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token.getTokenValue());
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -42,12 +42,22 @@ public class UserService {
         return response.getBody();
     }
 
+    public UserInfoDTO getUserInfo(Jwt token) {
+        String sub = token.getClaim("sub").toString();
+        List<User> users = userRepository.getUserWithAuth0ID(sub);
+        Optional<User> userEntity = users.stream().findFirst();
+        if(userEntity.isPresent()) {
+            return UserBuilder.toUserInfoDTO(userEntity.get());
+        }
+        throw new RuntimeException("No such user");
+    }
+
     @Transactional
     public void insertUser(Jwt token) {
         String auth0ID = token.getClaim("sub").toString();
         List<User> users = userRepository.getUserWithAuth0ID(auth0ID);
         if (users.isEmpty()) {
-            UserInfoDTO userInfoDTO = getUserInfo(token);
+            UserInfoDTO userInfoDTO = getUserInfoFromAuth(token);
             User newUser = User.builder()
                     .email(userInfoDTO.getEmail())
                     .auth0_id(userInfoDTO.getSub())
