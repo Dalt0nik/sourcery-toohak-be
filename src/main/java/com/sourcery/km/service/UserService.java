@@ -58,11 +58,7 @@ public class UserService {
         List<User> users = userRepository.getUserWithAuth0ID(auth0ID);
         if (users.isEmpty()) {
             UserInfoDTO userInfoDTO = getUserInfoFromAuth(token);
-            User newUser = User.builder()
-                    .email(userInfoDTO.getEmail())
-                    .auth0_id(userInfoDTO.getSub())
-                    .username(userInfoDTO.getName())
-                    .build();
+            User newUser = UserBuilder.toUserEntity(userInfoDTO);
             userRepository.insertUser(newUser);
         } else
             throw new RuntimeException(String.format("User %s already exists", auth0ID));

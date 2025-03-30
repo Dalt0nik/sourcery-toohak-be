@@ -14,4 +14,12 @@ public class UserBuilder {
                 .sub(user.getAuth0_id())
                 .build();
     }
+
+    public static User toUserEntity(UserInfoDTO user) {
+        return User.builder()
+                .username(user.getName())
+                .email(user.getEmail())
+                .auth0_id(user.getSub())
+                .build();
+    }
 }
