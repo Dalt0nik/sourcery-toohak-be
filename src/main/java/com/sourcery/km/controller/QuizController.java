@@ -6,7 +6,10 @@ import com.sourcery.km.service.QuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,5 +21,10 @@ public class QuizController {
     @PostMapping
     public QuizDTO createQuiz(@Valid @RequestBody CreateQuizDTO createQuizDTO) {
         return quizService.createQuiz(createQuizDTO);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<QuizDTO> getQuiz(@PathVariable(value = "id") UUID id){
+        return ResponseEntity.ok().body(quizService.getQuizById(id));
     }
 }

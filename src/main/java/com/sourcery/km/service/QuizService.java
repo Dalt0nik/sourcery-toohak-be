@@ -4,11 +4,14 @@ import com.sourcery.km.builder.quiz.QuizBuilder;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
 import com.sourcery.km.entity.Quiz;
+import com.sourcery.km.exception.QuizNotFoundException;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,4 +33,16 @@ public class QuizService {
 
         return QuizBuilder.toQuizDTO(quiz);
     }
+
+    private Quiz getQuiz(UUID id) {
+        return quizRepository.findById(id)
+                .orElseThrow(() -> new QuizNotFoundException(String.format("Quiz with id: %s does not exist" , id)));
+    }
+
+    public QuizDTO getQuizById(UUID id) {
+        Quiz quiz = getQuiz(id);
+        return QuizBuilder.toQuizDTO(quiz);
+    }
+
+
 }
