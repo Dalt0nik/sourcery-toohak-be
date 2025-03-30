@@ -5,17 +5,16 @@ import com.sourcery.km.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Log
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 @CrossOrigin(origins = "*")
 public class UserController {
 
@@ -24,5 +23,16 @@ public class UserController {
     @GetMapping
     public UserInfoDTO getUser(@AuthenticationPrincipal Jwt principal) {
         return userService.getUserInfo(principal);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity createUser(@AuthenticationPrincipal Jwt principal) {
+        try {
+            userService.insertUser(principal);
+            return new ResponseEntity(HttpStatus.CREATED);
+        } catch (RuntimeException ignored) {
+            log.info(ignored.getMessage());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
     }
 }

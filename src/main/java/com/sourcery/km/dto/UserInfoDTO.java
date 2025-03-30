@@ -8,5 +8,5 @@ import lombok.Value;
 public class UserInfoDTO {
     String sub;
     String name;
-    String nickname;
+    String email;
 }
