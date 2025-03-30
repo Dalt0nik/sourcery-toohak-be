@@ -12,7 +12,7 @@ public class QuizBuilder {
 
     public static Quiz toQuizEntity(CreateQuizDTO quizDTO) {
         return Quiz.builder()
-                .createdBy(quizDTO.getCreatedBy())
+                .created_by(quizDTO.getCreated_by())
                 .title(quizDTO.getTitle())
                 .description(quizDTO.getDescription())
                 .questions(QuestionBuilder.toQuestionEntities(quizDTO.getQuestions()))
@@ -22,11 +22,11 @@ public class QuizBuilder {
     public static QuizDTO toQuizDTO(Quiz quiz) {
         return QuizDTO.builder()
                 .id(quiz.getId())
-                .createdBy(quiz.getCreatedBy())
+                .created_by(quiz.getCreated_by())
                 .title(quiz.getTitle())
                 .description(quiz.getDescription())
-                .createdAt(quiz.getCreatedAt())
-                .updatedAt(quiz.getUpdatedAt())
+                .created_at(quiz.getCreated_at())
+                .updated_at(quiz.getUpdated_at())
                 .questions(QuestionBuilder.toQuestionDTOS(quiz.getQuestions()))
                 .build();
     }

@@ -15,15 +15,15 @@ public class Quiz {
     private UUID id = UUID.randomUUID();
 
     // user id
-    private UUID createdBy;
+    private UUID created_by;
 
     private String title;
 
     private String description;
 
-    private Instant createdAt;
+    private Instant created_at;
 
-    private Instant updatedAt;
+    private Instant updated_at;
 
     private List<Question> questions;
 }

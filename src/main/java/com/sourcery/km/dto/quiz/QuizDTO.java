@@ -15,13 +15,13 @@ public class QuizDTO {
 
     String title;
 
-    UUID createdBy;
+    UUID created_by;
 
     String description;
 
-    Instant createdAt;
+    Instant created_at;
 
-    Instant updatedAt;
+    Instant updated_at;
 
     List<QuestionDTO> questions;
 }

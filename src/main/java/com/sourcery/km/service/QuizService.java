@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class QuizService {
@@ -29,5 +32,19 @@ public class QuizService {
         }
 
         return QuizBuilder.toQuizDTO(quiz);
+    }
+
+    public List<QuizDTO> getQuizzes(String sub) {
+
+        List<Quiz> quizzes = quizRepository.getQuizzesByAuth0Id(sub);
+
+        for (Quiz quiz : quizzes) {
+            var questions = questionRepository.getQuestionsByQuizId(quiz.getId());
+            quiz.setQuestions(questions);
+        }
+
+        return quizzes.stream()
+                .map(QuizBuilder::toQuizDTO)
+                .toList();
     }
 }
