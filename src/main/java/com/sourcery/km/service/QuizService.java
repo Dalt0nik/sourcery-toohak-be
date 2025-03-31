@@ -66,7 +66,7 @@ public class QuizService {
         return QuizBuilder.toQuizDTO(quiz);
     }
 
-    public List<QuizCardDTO> getQuizCards(UUID user_id) {
-        return quizRepository.getQuizCardsByUserId(user_id);
+    public List<QuizCardDTO> getQuizCards(UUID userId) {
+        return quizRepository.getQuizCardsByUserId(userId);
     }
 }

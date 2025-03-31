@@ -32,13 +32,13 @@ public class QuizController {
     @GetMapping
     public List<QuizCardDTO> getAllQuizCards(@AuthenticationPrincipal Jwt jwt) {
         userService.getUserInfo(jwt);
-        UUID user_id = userService.getUserInfo(jwt).getId();
-        return quizService.getQuizCards(user_id);
+        UUID userId = userService.getUserInfo(jwt).getId();
+        return quizService.getQuizCards(userId);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public QuizDTO getQuiz(@PathVariable(value = "id") UUID id){
+    public QuizDTO getQuiz(@PathVariable(value = "id") UUID id) {
         return quizService.getQuizById(id);
     }
 }

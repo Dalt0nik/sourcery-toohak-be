@@ -28,6 +28,6 @@ public interface QuestionRepository {
     SELECT q.id, q.quiz_id, q.title
     FROM questions q
     WHERE q.quiz_id = #{quizId}
-""")
+        """)
     List<Question> getQuestionsByQuizId(@Param("quizId") UUID quizId);
 }

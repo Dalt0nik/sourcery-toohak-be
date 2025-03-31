@@ -33,10 +33,10 @@ public interface QuizRepository {
         COUNT(ques.id) AS question_amount
     FROM quizzes q
     LEFT JOIN questions ques ON ques.quiz_id = q.id
-    WHERE q.created_by = #{user_id}
+    WHERE q.created_by = #{userId}
     GROUP BY 
         q.id, q.created_by, q.title, q.description, q.created_at, q.updated_at
     ORDER BY q.created_at DESC
-""")
-    List<QuizCardDTO> getQuizCardsByUserId(@Param("user_id") UUID user_id);
+        """)
+    List<QuizCardDTO> getQuizCardsByUserId(@Param("userId") UUID userId);
 }
