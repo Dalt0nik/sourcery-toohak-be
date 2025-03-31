@@ -1,5 +1,6 @@
 package com.sourcery.km.builder.question;
 
+import com.sourcery.km.builder.questionOption.QuestionOptionBuilder;
 import com.sourcery.km.dto.question.CreateQuestionDTO;
 import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.entity.Question;
@@ -14,6 +15,8 @@ public class QuestionBuilder {
     public static Question toQuestionEntity(CreateQuestionDTO questionDTO) {
         return Question.builder()
                 .title(questionDTO.getTitle())
+                .imageId(questionDTO.getImageId())
+                .questionOptions(QuestionOptionBuilder.toQuestionOptionEntities(questionDTO.getQuestionOptions()))
                 .build();
     }
 
@@ -23,6 +26,7 @@ public class QuestionBuilder {
                 .quizId(question.getQuizId())
                 .imageId(question.getImageId())
                 .title(question.getTitle())
+                .questionOptions(QuestionOptionBuilder.toQuestionOptionDTOS(question.getQuestionOptions()))
                 .build();
     }
 

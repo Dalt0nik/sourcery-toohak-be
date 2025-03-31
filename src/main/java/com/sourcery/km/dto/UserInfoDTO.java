@@ -7,6 +7,8 @@ import lombok.Value;
 @Builder
 public class UserInfoDTO {
     String sub;
+
     String name;
+
     String email;
 }
