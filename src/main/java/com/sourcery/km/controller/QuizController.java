@@ -6,8 +6,8 @@ import com.sourcery.km.service.QuizService;
 import com.sourcery.km.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +35,11 @@ public class QuizController {
         userService.getUserInfo(jwt);
         String sub = userService.getUserInfo(jwt).getSub();
         return quizService.getQuizzes(sub);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    public QuizDTO getQuiz(@PathVariable(value = "id") UUID id){
+        return quizService.getQuizById(id);
     }
 }

@@ -2,6 +2,7 @@ package com.sourcery.km.entity;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,4 +18,6 @@ public class Question {
     private UUID imageId;
 
     private String title;
+
+    private List<QuestionOption> questionOptions;
 }

@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -28,7 +27,7 @@ public class UserService {
     @Value("${okta.oauth2.issuer}")
     String auth0Domain;
 
-    final String userInfoPath = "/userinfo";
+    final static String userInfoPath = "/userinfo";
 
     private final RestTemplate restTemplate;
 
@@ -38,7 +37,8 @@ public class UserService {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token.getTokenValue());
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<UserInfoDTO> response = restTemplate.exchange(auth0Domain + userInfoPath, HttpMethod.GET, entity, UserInfoDTO.class);
+        ResponseEntity<UserInfoDTO> response = restTemplate.exchange(
+                auth0Domain + userInfoPath, HttpMethod.GET, entity, UserInfoDTO.class);
         return response.getBody();
     }
 
@@ -46,7 +46,7 @@ public class UserService {
         String sub = token.getClaim("sub").toString();
         List<User> users = userRepository.getUserWithAuth0ID(sub);
         Optional<User> userEntity = users.stream().findFirst();
-        if(userEntity.isPresent()) {
+        if (userEntity.isPresent()) {
             return UserBuilder.toUserInfoDTO(userEntity.get());
         }
         throw new RuntimeException("No such user");
