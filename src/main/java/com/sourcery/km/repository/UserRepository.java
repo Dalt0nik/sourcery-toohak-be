@@ -12,5 +12,5 @@ public interface UserRepository {
     void insertUser(User user);
 
     @Select("SELECT * FROM app_users WHERE auth0_id=#{auth0_id}")
-    List<User> getUserWithAuth0ID(String auth0_id);
+    List<User> getUserWithAuth0ID(String auth0Id);
 }

@@ -9,17 +9,21 @@ import lombok.NoArgsConstructor;
 public class UserBuilder {
     public static UserInfoDTO toUserInfoDTO(User user) {
         return UserInfoDTO.builder()
-                .email(user.getEmail())
+                .id(user.getId())
+                .auth0Id(user.getAuth0_id())
                 .name(user.getUsername())
-                .sub(user.getAuth0_id())
+                .email(user.getEmail())
+                .picture(user.getPicture())
                 .build();
     }
 
     public static User toUserEntity(UserInfoDTO user) {
         return User.builder()
+                .id(user.getId())
+                .auth0_id(user.getAuth0Id())
                 .username(user.getName())
                 .email(user.getEmail())
-                .auth0_id(user.getSub())
+                .picture(user.getPicture())
                 .build();
     }
 }

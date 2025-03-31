@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
@@ -23,7 +22,7 @@ public class UserController {
             UserInfoDTO userInfoDto = userService.getUserInfo(principal);
             return ResponseEntity.ok(userInfoDto);
         } catch (RuntimeException ignored) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -33,7 +32,6 @@ public class UserController {
             userService.insertUser(principal);
             return new ResponseEntity(HttpStatus.CREATED);
         } catch (RuntimeException ignored) {
-            log.info(ignored.getMessage());
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
     }

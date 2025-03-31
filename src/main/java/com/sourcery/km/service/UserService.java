@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -47,7 +46,7 @@ public class UserService {
         String sub = token.getClaim("sub").toString();
         List<User> users = userRepository.getUserWithAuth0ID(sub);
         Optional<User> userEntity = users.stream().findFirst();
-        if(userEntity.isPresent()) {
+        if (userEntity.isPresent()) {
             return UserBuilder.toUserInfoDTO(userEntity.get());
         }
         throw new RuntimeException("No such user");
