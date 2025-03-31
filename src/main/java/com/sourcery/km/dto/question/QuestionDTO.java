@@ -1,8 +1,10 @@
 package com.sourcery.km.dto.question;
 
+import com.sourcery.km.dto.questionOption.QuestionOptionDTO;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.List;
 import java.util.UUID;
 
 @Value
@@ -15,4 +17,6 @@ public class QuestionDTO {
     UUID imageId;
 
     String title;
+
+    List<QuestionOptionDTO> questionOptions;
 }
