@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/quizzes")
@@ -33,8 +32,8 @@ public class QuizController {
     @GetMapping
     public List<QuizDTO> getAllQuizzes(@AuthenticationPrincipal Jwt jwt) {
         userService.getUserInfo(jwt);
-        String sub = userService.getUserInfo(jwt).getSub();
-        return quizService.getQuizzes(sub);
+        UUID user_id = userService.getUserInfo(jwt).getId();
+        return quizService.getQuizzes(user_id);
     }
 
     @ResponseStatus(HttpStatus.OK)

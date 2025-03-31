@@ -24,9 +24,8 @@ public interface QuizRepository {
     @Select("""
     SELECT q.id, q.created_by, q.title, q.description, q.created_at, q.updated_at
     FROM quizzes q
-    JOIN app_users u ON q.created_by = u.id
-    WHERE u.auth0_id = #{sub}
+    WHERE q.created_by = #{user_id}
     ORDER BY q.created_at DESC
 """)
-    List<Quiz> getQuizzesByAuth0Id(String sub);
+    List<Quiz> getQuizzesByUserId(UUID user_id);
 }

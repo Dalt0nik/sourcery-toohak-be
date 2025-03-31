@@ -63,9 +63,9 @@ public class QuizService {
         return QuizBuilder.toQuizDTO(quiz);
     }
 
-    public List<QuizDTO> getQuizzes(String sub) {
+    public List<QuizDTO> getQuizzes(UUID user_id) {
 
-        List<Quiz> quizzes = quizRepository.getQuizzesByAuth0Id(sub);
+        List<Quiz> quizzes = quizRepository.getQuizzesByUserId(user_id);
 
         for (Quiz quiz : quizzes) {
             var questions = questionRepository.getQuestionsByQuizId(quiz.getId());
