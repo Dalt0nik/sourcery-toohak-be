@@ -4,6 +4,7 @@ import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import com.sourcery.km.builder.quiz.QuizBuilder;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
+import com.sourcery.km.dto.quiz.QuizRequestDto;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.exception.QuizNotFoundException;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -62,5 +64,13 @@ public class QuizService {
         return QuizBuilder.toQuizDTO(quiz);
     }
 
+    public QuizDTO updateQuiz (QuizRequestDto quizRequestDto, UUID id){
+        Quiz quiz = getQuiz(id);
+        quiz.setTitle(quizRequestDto.getTitle());
+        quiz.setDescription(quizRequestDto.getDescription());
+        quiz.setUpdatedAt(Instant.now());
+        quizRepository.update(quiz);
+        return QuizBuilder.toQuizDTO(quiz);
+    }
 
 }
