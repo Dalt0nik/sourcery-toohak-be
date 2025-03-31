@@ -23,8 +23,9 @@ public class QuizController {
         return quizService.createQuiz(createQuizDTO);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<QuizDTO> getQuiz(@PathVariable(value = "id") UUID id){
-        return ResponseEntity.ok().body(quizService.getQuizById(id));
+    public QuizDTO getQuiz(@PathVariable(value = "id") UUID id){
+        return quizService.getQuizById(id);
     }
 }

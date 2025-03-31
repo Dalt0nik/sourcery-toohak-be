@@ -12,7 +12,6 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleQuizNotFoundException (QuizNotFoundException exception){
         ProblemDetail response = ProblemDetail.forStatus(404);
         response.setTitle("Quiz not found");
-        response.setStatus(response.getStatus());
         response.setDetail(exception.getMessage());
         return response;
     }
