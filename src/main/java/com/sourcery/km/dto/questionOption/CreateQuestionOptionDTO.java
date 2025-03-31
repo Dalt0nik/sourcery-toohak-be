@@ -1,27 +1,24 @@
-package com.sourcery.km.dto.question;
+package com.sourcery.km.dto.questionOption;
 
-import com.sourcery.km.dto.questionOption.CreateQuestionOptionDTO;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Value;
-
-import java.util.List;
 import java.util.UUID;
 
 @Value
 @Builder
-public class CreateQuestionDTO {
-
-    UUID quizId;
-
-    UUID imageId;
+public class CreateQuestionOptionDTO {
+    UUID questionId;
 
     @NotBlank(message = "Title cannot be blank")
     @Size(max = 200, message = "Title must be at most 200 characters")
     String title;
 
-    @Valid
-    List<CreateQuestionOptionDTO> questionOptions;
+    @NotNull(message = "Ordering cannot be null")
+    Integer ordering;
+
+    @NotNull(message = "isCorrect cannot be null")
+    Boolean isCorrect;
 }
