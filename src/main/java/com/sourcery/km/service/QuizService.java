@@ -3,6 +3,7 @@ package com.sourcery.km.service;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import com.sourcery.km.builder.quiz.QuizBuilder;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
+import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.repository.QuestionOptionRepository;
@@ -65,20 +66,7 @@ public class QuizService {
         return QuizBuilder.toQuizDTO(quiz);
     }
 
-    public List<QuizDTO> getQuizzes(UUID user_id) {
-
-        List<Quiz> quizzes = quizRepository.getQuizzesByUserId(user_id);
-
-        for (Quiz quiz : quizzes) {
-            log.info("{}", quiz);
-            var questions = questionRepository.getQuestionsByQuizId(quiz.getId());
-            quiz.setQuestions(questions);
-        }
-
-        return quizzes.stream()
-                .map(QuizBuilder::toQuizDTO)
-                .toList();
+    public List<QuizCardDTO> getQuizCards(UUID user_id) {
+        return quizRepository.getQuizCardsByUserId(user_id);
     }
-
-
 }

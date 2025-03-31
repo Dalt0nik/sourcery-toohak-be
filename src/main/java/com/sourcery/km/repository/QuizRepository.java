@@ -1,5 +1,6 @@
 package com.sourcery.km.repository;
 
+import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.entity.Quiz;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,10 +23,20 @@ public interface QuizRepository {
     Optional<Quiz> findById(@Param("id") UUID id);
 
     @Select("""
-    SELECT q.id, q.created_by, q.title, q.description, q.created_at, q.updated_at
+    SELECT 
+        q.id, 
+        q.created_by, 
+        q.title, 
+        q.description, 
+        q.created_at, 
+        q.updated_at, 
+        COUNT(ques.id) AS question_amount
     FROM quizzes q
+    LEFT JOIN questions ques ON ques.quiz_id = q.id
     WHERE q.created_by = #{user_id}
+    GROUP BY 
+        q.id, q.created_by, q.title, q.description, q.created_at, q.updated_at
     ORDER BY q.created_at DESC
 """)
-    List<Quiz> getQuizzesByUserId(UUID user_id);
+    List<QuizCardDTO> getQuizCardsByUserId(@Param("user_id") UUID user_id);
 }
