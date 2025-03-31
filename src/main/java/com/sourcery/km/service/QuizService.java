@@ -1,5 +1,6 @@
 package com.sourcery.km.service;
 
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import com.sourcery.km.builder.quiz.QuizBuilder;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
@@ -26,7 +27,7 @@ public class QuizService {
         Quiz quiz = QuizBuilder.toQuizEntity(quizDTO);
         quizRepository.insertQuiz(quiz);
 
-        if (quiz.getQuestions() != null && !quiz.getQuestions().isEmpty()) {
+        if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {
             insertQuestions(quiz);
             insertQuestionOptions(quiz);
         }
@@ -41,7 +42,7 @@ public class QuizService {
 
     private void insertQuestionOptions(Quiz quiz) {
         quiz.getQuestions().forEach(question -> {
-            if (question.getQuestionOptions() != null && !question.getQuestionOptions().isEmpty()) {
+            if (CollectionUtils.isNotEmpty(question.getQuestionOptions())) {
                 question.getQuestionOptions().forEach(option -> option.setQuestionId(question.getId()));
                 questionOptionRepository.insertQuestionOptions(question.getQuestionOptions());
             }
