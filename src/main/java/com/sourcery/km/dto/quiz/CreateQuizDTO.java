@@ -20,7 +20,7 @@ public class CreateQuizDTO {
     String title;
 
     @NotNull(message = "Creator ID cannot be blank")
-    UUID created_by;
+    UUID createdBy;
 
     @Size(max = 500, message = "Description must be at most 500 characters")
     String description;

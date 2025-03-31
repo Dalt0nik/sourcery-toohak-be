@@ -10,12 +10,14 @@ import com.sourcery.km.exception.QuizNotFoundException;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class QuizService {
@@ -68,6 +70,7 @@ public class QuizService {
         List<Quiz> quizzes = quizRepository.getQuizzesByUserId(user_id);
 
         for (Quiz quiz : quizzes) {
+            log.info("{}", quiz);
             var questions = questionRepository.getQuestionsByQuizId(quiz.getId());
             quiz.setQuestions(questions);
         }

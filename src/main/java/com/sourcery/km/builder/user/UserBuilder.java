@@ -10,7 +10,7 @@ public class UserBuilder {
     public static UserInfoDTO toUserInfoDTO(User user) {
         return UserInfoDTO.builder()
                 .id(user.getId())
-                .auth0Id(user.getAuth0_id())
+                .auth0Id(user.getAuth0Id())
                 .name(user.getUsername())
                 .email(user.getEmail())
                 .picture(user.getPicture())
@@ -20,7 +20,7 @@ public class UserBuilder {
     public static User toUserEntity(UserInfoDTO user) {
         return User.builder()
                 .id(user.getId())
-                .auth0_id(user.getAuth0Id())
+                .auth0Id(user.getAuth0Id())
                 .username(user.getName())
                 .email(user.getEmail())
                 .picture(user.getPicture())

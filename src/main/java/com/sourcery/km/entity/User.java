@@ -16,7 +16,7 @@ public class User {
     @Builder.Default
     UUID id = UUID.randomUUID();
 
-    String auth0_id;
+    String auth0Id;
 
     UUID picture;
 
@@ -24,7 +24,7 @@ public class User {
 
     String username;
 
-    Instant created_at;
+    Instant createdAt;
 
-    Instant updated_at;
+    Instant updatedAt;
 }

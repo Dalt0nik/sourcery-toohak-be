@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface QuizRepository {
     @Insert("INSERT INTO quizzes(id, created_by, title, description)" +
-            " VALUES(#{id}, #{created_by}, #{title}, #{description})")
+            " VALUES(#{id}, #{createdBy}, #{title}, #{description})")
     void insertQuiz(Quiz quiz);
 
     @Select("SELECT * FROM quizzes WHERE id = #{id}")
