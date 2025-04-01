@@ -15,4 +15,20 @@ public class GlobalExceptionHandler {
         response.setDetail(exception.getMessage());
         return response;
     }
+
+    @ExceptionHandler({UserNotFound.class})
+    public ProblemDetail handleUserNotFound (UserNotFound exception){
+        ProblemDetail response = ProblemDetail.forStatus(404);
+        response.setTitle("User not found");
+        response.setDetail(exception.getMessage());
+        return response;
+    }
+
+    @ExceptionHandler({UserAlreadyExists.class})
+    public ProblemDetail handleUserNotFound (UserAlreadyExists exception){
+        ProblemDetail response = ProblemDetail.forStatus(400);
+        response.setTitle("User already exists");
+        response.setDetail(exception.getMessage());
+        return response;
+    }
 }

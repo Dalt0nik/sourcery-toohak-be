@@ -18,8 +18,6 @@ public class User {
 
     String auth0_id;
 
-    UUID picture;
-
     String email;
 
     String username;

@@ -18,21 +18,13 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<UserInfoDTO> getUser(@AuthenticationPrincipal Jwt principal) {
-        try {
-            UserInfoDTO userInfoDto = userService.getUserInfo(principal);
-            return ResponseEntity.ok(userInfoDto);
-        } catch (RuntimeException ignored) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        UserInfoDTO userInfoDto = userService.getUserInfo(principal);
+        return ResponseEntity.ok(userInfoDto);
     }
 
     @PostMapping("/register")
     public ResponseEntity createUser(@AuthenticationPrincipal Jwt principal) {
-        try {
-            userService.insertUser(principal);
-            return new ResponseEntity(HttpStatus.CREATED);
-        } catch (RuntimeException ignored) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        }
+        userService.insertUser(principal);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 }

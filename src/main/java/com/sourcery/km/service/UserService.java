@@ -3,6 +3,8 @@ package com.sourcery.km.service;
 import com.sourcery.km.builder.user.UserBuilder;
 import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.entity.User;
+import com.sourcery.km.exception.UserAlreadyExists;
+import com.sourcery.km.exception.UserNotFound;
 import com.sourcery.km.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +51,7 @@ public class UserService {
         if (userEntity.isPresent()) {
             return UserBuilder.toUserInfoDTO(userEntity.get());
         }
-        throw new RuntimeException("No such user");
+        throw new UserNotFound("");
     }
 
     @Transactional
@@ -61,6 +63,6 @@ public class UserService {
             User newUser = UserBuilder.toUserEntity(userInfoDTO);
             userRepository.insertUser(newUser);
         } else
-            throw new RuntimeException(String.format("User %s already exists", auth0ID));
+            throw new UserAlreadyExists("");
     }
 }
