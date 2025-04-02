@@ -56,8 +56,7 @@ public class UserService {
         }
 
         String sub = token.getClaim("sub").toString();
-        List<User> users = userRepository.getUserWithAuth0ID(sub);
-        Optional<User> userEntity = users.stream().findFirst();
+        Optional<User> userEntity = userRepository.getUserWithAuth0ID(sub);
         if (userEntity.isPresent()) {
             return UserBuilder.toUserInfoDTO(userEntity.get());
         }
@@ -67,7 +66,7 @@ public class UserService {
     @Transactional
     public void insertUser(Jwt token) {
         String auth0ID = token.getClaim("sub").toString();
-        List<User> users = userRepository.getUserWithAuth0ID(auth0ID);
+        Optional<User> users = userRepository.getUserWithAuth0ID(auth0ID);
         if (users.isEmpty()) {
             UserInfoDTO userInfoDTO = getUserInfoFromAuth(token);
             User newUser = UserBuilder.toUserEntity(userInfoDTO);

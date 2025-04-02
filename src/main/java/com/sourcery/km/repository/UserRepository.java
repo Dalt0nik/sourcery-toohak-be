@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository {
@@ -12,5 +13,5 @@ public interface UserRepository {
     void insertUser(User user);
 
     @Select("SELECT * FROM app_users WHERE auth0_id=#{auth0Id}")
-    List<User> getUserWithAuth0ID(String auth0Id);
+    Optional<User> getUserWithAuth0ID(String auth0Id);
 }
