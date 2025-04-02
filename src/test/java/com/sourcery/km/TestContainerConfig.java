@@ -25,9 +25,4 @@ public class TestContainerConfig {
     static void beforeAll() {
         postgres.start();
     }
-
-    @AfterAll
-    static void afterAll() {
-        postgres.stop();
-    }
 }
