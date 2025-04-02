@@ -25,7 +25,7 @@ public class QuizController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public QuizDTO getQuiz(@PathVariable(value = "id") UUID id){
+    public QuizDTO getQuiz(@PathVariable(value = "id") UUID id) {
         return quizService.getQuizById(id);
     }
 
