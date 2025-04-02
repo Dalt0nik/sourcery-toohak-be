@@ -3,6 +3,7 @@ package com.sourcery.km.service;
 import com.sourcery.km.builder.user.UserBuilder;
 import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.entity.User;
+import com.sourcery.km.exception.UnauthorizedException;
 import com.sourcery.km.exception.UserAlreadyExists;
 import com.sourcery.km.exception.UserNotFound;
 import com.sourcery.km.repository.UserRepository;
@@ -13,6 +14,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +48,13 @@ public class UserService {
         return response.getBody();
     }
 
-    public UserInfoDTO getUserInfo(Jwt token) {
+    public UserInfoDTO getUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt token)) {
+            throw new UnauthorizedException("User not authenticated");
+        }
+
         String sub = token.getClaim("sub").toString();
         List<User> users = userRepository.getUserWithAuth0ID(sub);
         Optional<User> userEntity = users.stream().findFirst();
