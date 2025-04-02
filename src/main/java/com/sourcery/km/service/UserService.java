@@ -57,10 +57,8 @@ public class UserService {
 
         String sub = token.getClaim("sub").toString();
         Optional<User> userEntity = userRepository.getUserWithAuth0ID(sub);
-        if (userEntity.isPresent()) {
-            return UserBuilder.toUserInfoDTO(userEntity.get());
-        }
-        throw new UserNotFound("");
+
+        return UserBuilder.toUserInfoDTO(userEntity.orElseThrow(()-> new UserNotFound("")));
     }
 
     @Transactional
