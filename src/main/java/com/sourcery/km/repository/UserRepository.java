@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserRepository {
-    @Insert("INSERT INTO app_users (id, auth0_id, email, username) VALUES (#{id}, #{auth0_id}, #{email}, #{username})")
+    @Insert("INSERT INTO app_users (id, auth0_id, email, username) VALUES (#{id}, #{auth0Id}, #{email}, #{username})")
     void insertUser(User user);
 
-    @Select("SELECT * FROM app_users WHERE auth0_id=#{auth0_id}")
+    @Select("SELECT * FROM app_users WHERE auth0_id=#{auth0Id}")
     List<User> getUserWithAuth0ID(String auth0Id);
 }

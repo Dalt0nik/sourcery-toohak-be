@@ -17,6 +17,11 @@ public class MyBatisConfig {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
 
+        org.apache.ibatis.session.Configuration configuration =
+                new org.apache.ibatis.session.Configuration();
+        configuration.setMapUnderscoreToCamelCase(true);
+        sessionFactory.setConfiguration(configuration);
+
         // register UUID handling
         SqlSessionFactory sqlSessionFactory = sessionFactory.getObject();
         if (sqlSessionFactory != null) {

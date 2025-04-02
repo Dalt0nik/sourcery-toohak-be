@@ -4,9 +4,11 @@ import com.sourcery.km.entity.Question;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper
 @Repository
@@ -21,4 +23,11 @@ public interface QuestionRepository {
         "</script>"
     })
     void insertQuestions(@Param("questions") List<Question> questions);
+
+    @Select("""
+    SELECT q.id, q.quiz_id, q.title
+    FROM questions q
+    WHERE q.quiz_id = #{quizId}
+        """)
+    List<Question> getQuestionsByQuizId(@Param("quizId") UUID quizId);
 }

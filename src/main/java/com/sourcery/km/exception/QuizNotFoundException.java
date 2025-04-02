@@ -2,7 +2,7 @@ package com.sourcery.km.exception;
 
 public class QuizNotFoundException extends RuntimeException {
 
-    public QuizNotFoundException (String message){
+    public QuizNotFoundException (String message) {
         super(message);
     }
 }
