@@ -17,14 +17,13 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<UserInfoDTO> getUser(@AuthenticationPrincipal Jwt principal) {
-        UserInfoDTO userInfoDto = userService.getUserInfo(principal);
-        return ResponseEntity.ok(userInfoDto);
+    public UserInfoDTO getUser(@AuthenticationPrincipal Jwt principal) {
+        return userService.getUserInfo(principal);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
-    public ResponseEntity createUser(@AuthenticationPrincipal Jwt principal) {
+    public void createUser(@AuthenticationPrincipal Jwt principal) {
         userService.insertUser(principal);
-        return new ResponseEntity(HttpStatus.CREATED);
     }
 }

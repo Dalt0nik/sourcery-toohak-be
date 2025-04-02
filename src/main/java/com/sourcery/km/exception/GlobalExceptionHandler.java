@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({UserAlreadyExists.class})
     public ProblemDetail handleUserNotFound (UserAlreadyExists exception){
-        ProblemDetail response = ProblemDetail.forStatus(400);
+        ProblemDetail response = ProblemDetail.forStatus(409);
         response.setTitle("User already exists");
         response.setDetail(exception.getMessage());
         return response;
