@@ -31,9 +31,7 @@ public class QuizController {
 
     @GetMapping
     public List<QuizCardDTO> getAllQuizCards(@AuthenticationPrincipal Jwt jwt) {
-        userService.getUserInfo(jwt);
-        UUID userId = userService.getUserInfo(jwt).getId();
-        return quizService.getQuizCards(userId);
+        return quizService.getQuizCards(jwt);
     }
 
     @ResponseStatus(HttpStatus.OK)

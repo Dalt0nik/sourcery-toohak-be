@@ -12,6 +12,7 @@ import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,8 @@ public class QuizService {
     private final QuestionRepository questionRepository;
 
     private final QuestionOptionRepository questionOptionRepository;
+
+    private final UserService userService;
 
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
@@ -66,7 +69,7 @@ public class QuizService {
         return QuizBuilder.toQuizDTO(quiz);
     }
 
-    public List<QuizCardDTO> getQuizCards(UUID userId) {
-        return quizRepository.getQuizCardsByUserId(userId);
+    public List<QuizCardDTO> getQuizCards(Jwt jwt) {
+        return quizRepository.getQuizCardsByUserId(userService.getUserInfo(jwt).getId());
     }
 }
