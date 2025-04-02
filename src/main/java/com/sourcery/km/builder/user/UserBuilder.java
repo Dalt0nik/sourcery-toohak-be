@@ -10,7 +10,7 @@ public class UserBuilder {
     public static UserInfoDTO toUserInfoDTO(User user) {
         return UserInfoDTO.builder()
                 .id(user.getId())
-                .sub(user.getAuth0_id())
+                .sub(user.getAuth0Id())
                 .name(user.getUsername())
                 .email(user.getEmail())
                 .build();
@@ -18,7 +18,7 @@ public class UserBuilder {
 
     public static User toUserEntity(UserInfoDTO user) {
         return User.builder()
-                .auth0_id(user.getSub())
+                .auth0Id(user.getSub())
                 .username(user.getName())
                 .email(user.getEmail())
                 .build();

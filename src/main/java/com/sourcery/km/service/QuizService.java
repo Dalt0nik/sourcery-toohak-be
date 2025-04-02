@@ -3,6 +3,7 @@ package com.sourcery.km.service;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import com.sourcery.km.builder.quiz.QuizBuilder;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
+import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.repository.QuestionOptionRepository;
@@ -10,11 +11,15 @@ import com.sourcery.km.exception.QuizNotFoundException;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class QuizService {
@@ -24,6 +29,8 @@ public class QuizService {
     private final QuestionRepository questionRepository;
 
     private final QuestionOptionRepository questionOptionRepository;
+
+    private final UserService userService;
 
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
@@ -62,5 +69,7 @@ public class QuizService {
         return QuizBuilder.toQuizDTO(quiz);
     }
 
-
+    public List<QuizCardDTO> getQuizCards(Jwt jwt) {
+        return quizRepository.getQuizCardsByUserId(userService.getUserInfo(jwt).getId());
+    }
 }
