@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({QuizNotFoundException.class})
-    public ProblemDetail handleQuizNotFoundException (QuizNotFoundException exception){
+    public ProblemDetail handleQuizNotFoundException (QuizNotFoundException exception) {
         ProblemDetail response = ProblemDetail.forStatus(404);
         response.setTitle("Quiz not found");
         response.setDetail(exception.getMessage());
@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({UserNotFound.class})
-    public ProblemDetail handleUserNotFound (UserNotFound exception){
+    public ProblemDetail handleUserNotFound (UserNotFound exception) {
         ProblemDetail response = ProblemDetail.forStatus(404);
         response.setTitle("User not found");
         response.setDetail(exception.getMessage());
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({UserAlreadyExists.class})
-    public ProblemDetail handleUserNotFound (UserAlreadyExists exception){
+    public ProblemDetail handleUserNotFound (UserAlreadyExists exception) {
         ProblemDetail response = ProblemDetail.forStatus(409);
         response.setTitle("User already exists");
         response.setDetail(exception.getMessage());
