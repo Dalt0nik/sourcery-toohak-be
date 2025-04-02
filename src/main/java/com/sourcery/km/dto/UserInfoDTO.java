@@ -8,13 +8,11 @@ import java.util.UUID;
 @Value
 @Builder
 public class UserInfoDTO {
-    String auth0Id;
+    String sub;
 
     String name;
 
     String email;
 
     UUID id;
-
-    UUID picture;
 }
