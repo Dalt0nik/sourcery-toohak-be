@@ -66,16 +66,13 @@ public class QuizService {
 
     private Quiz getQuiz(UUID id) {
         return quizRepository.findById(id)
-                .orElseThrow(() -> new QuizNotFoundException(String.format("Quiz with id: %s does not exist" , id)));
+                .orElseThrow(() -> new QuizNotFoundException(String.format("Quiz with id: %s does not exist", id)));
     }
-    // CHANGE THIS METHOD WHEN USERSERVICE getUserInfo WILL BE MODIFIED
-    private boolean isQuizCreator (Quiz quiz){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UUID userId = userService.getUserInfo((Jwt) authentication.getPrincipal()).getId();
+
+    private boolean isQuizCreator(Quiz quiz) {
+        UUID userId = userService.getUserInfo().getId();
         return userId.equals(quiz.getCreatedBy());
-
     }
-
 
     public QuizDTO getQuizById(UUID id) {
         Quiz quiz = getQuiz(id);
@@ -84,19 +81,18 @@ public class QuizService {
 
     public List<QuizCardDTO> getQuizCards() {
         return quizRepository.getQuizCardsByUserId(userService.getUserInfo().getId());
+    }
 
-    }    public QuizDTO updateQuiz (QuizRequestDto quizRequestDto, UUID id){
+    public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID id) {
         Quiz quiz = getQuiz(id);
-        if(isQuizCreator(quiz)){
+        if (isQuizCreator(quiz)) {
             quiz.setTitle(quizRequestDto.getTitle());
             quiz.setDescription(quizRequestDto.getDescription());
             quizRepository.update(quiz);
             return QuizBuilder.toQuizDTO(quiz);
-        }else{
+        } else {
             throw new NotQuizCreator("user is not quiz creator");
         }
-
-
     }
 
 }
