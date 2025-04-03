@@ -1,12 +1,11 @@
 package com.sourcery.km.repository;
 
-import com.sourcery.km.entity.User;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import com.sourcery.km.entity.User;
 
 public interface UserRepository {
     @Insert("INSERT INTO app_users (id, auth0_id, email, username) VALUES (#{id}, #{auth0Id}, #{email}, #{username})")
@@ -14,4 +13,7 @@ public interface UserRepository {
 
     @Select("SELECT * FROM app_users WHERE auth0_id=#{auth0Id}")
     Optional<User> getUserWithAuth0ID(String auth0Id);
+
+    @Select("SELECT * FROM app_users WHERE id=#{id}")
+    Optional<User> getUserById(UUID id);
 }
