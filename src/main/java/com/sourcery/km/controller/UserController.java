@@ -17,8 +17,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public UserInfoDTO getUser(@AuthenticationPrincipal Jwt principal) {
-        return userService.getUserInfo(principal);
+    public UserInfoDTO getUser() {
+        return userService.getUserInfo();
     }
 
     @ResponseStatus(HttpStatus.CREATED)

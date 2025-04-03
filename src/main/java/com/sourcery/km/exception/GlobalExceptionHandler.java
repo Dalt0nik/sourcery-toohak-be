@@ -31,4 +31,12 @@ public class GlobalExceptionHandler {
         response.setDetail(exception.getMessage());
         return response;
     }
+
+    @ExceptionHandler({UnauthorizedException.class})
+    public ProblemDetail handleUnauthorizedException (UnauthorizedException exception) {
+        ProblemDetail response = ProblemDetail.forStatus(409);
+        response.setTitle("Unauthorized action");
+        response.setDetail(exception.getMessage());
+        return response;
+    }
 }

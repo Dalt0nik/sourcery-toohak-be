@@ -1,25 +1,29 @@
 package com.sourcery.km.service;
 
-import com.sourcery.km.builder.user.UserBuilder;
-import com.sourcery.km.dto.UserInfoDTO;
-import com.sourcery.km.entity.User;
-import com.sourcery.km.exception.UserAlreadyExists;
-import com.sourcery.km.exception.UserNotFound;
-import com.sourcery.km.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Optional;
+import com.sourcery.km.builder.user.UserBuilder;
+import com.sourcery.km.dto.UserInfoDTO;
+import com.sourcery.km.entity.User;
+import com.sourcery.km.exception.UnauthorizedException;
+import com.sourcery.km.exception.UserAlreadyExists;
+import com.sourcery.km.exception.UserNotFound;
+import com.sourcery.km.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -44,20 +48,21 @@ public class UserService {
         return response.getBody();
     }
 
-    public UserInfoDTO getUserInfo(Jwt token) {
-        String sub = token.getClaim("sub").toString();
-        List<User> users = userRepository.getUserWithAuth0ID(sub);
-        Optional<User> userEntity = users.stream().findFirst();
-        if (userEntity.isPresent()) {
-            return UserBuilder.toUserInfoDTO(userEntity.get());
+    public UserInfoDTO getUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt token)) {
+            throw new UnauthorizedException("User not authenticated");
         }
-        throw new UserNotFound("");
+        String sub = token.getClaim("sub").toString();
+        User user = userRepository.getUserWithAuth0ID(sub)
+                .orElseThrow(() -> new UserNotFound(""));
+        return UserBuilder.toUserInfoDTO(user);
     }
 
     @Transactional
     public void insertUser(Jwt token) {
         String auth0ID = token.getClaim("sub").toString();
-        List<User> users = userRepository.getUserWithAuth0ID(auth0ID);
+        Optional<User> users = userRepository.getUserWithAuth0ID(auth0ID);
         if (users.isEmpty()) {
             UserInfoDTO userInfoDTO = getUserInfoFromAuth(token);
             User newUser = UserBuilder.toUserEntity(userInfoDTO);
