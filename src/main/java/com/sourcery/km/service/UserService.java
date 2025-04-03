@@ -1,14 +1,7 @@
 package com.sourcery.km.service;
 
-import com.sourcery.km.builder.user.UserBuilder;
-import com.sourcery.km.dto.UserInfoDTO;
-import com.sourcery.km.entity.User;
-import com.sourcery.km.exception.UnauthorizedException;
-import com.sourcery.km.exception.UserAlreadyExists;
-import com.sourcery.km.exception.UserNotFound;
-import com.sourcery.km.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Optional;
+import com.sourcery.km.builder.user.UserBuilder;
+import com.sourcery.km.dto.UserInfoDTO;
+import com.sourcery.km.entity.User;
+import com.sourcery.km.exception.UnauthorizedException;
+import com.sourcery.km.exception.UserAlreadyExists;
+import com.sourcery.km.exception.UserNotFound;
+import com.sourcery.km.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
