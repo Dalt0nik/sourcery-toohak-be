@@ -15,14 +15,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -50,17 +48,13 @@ public class UserService {
 
     public UserInfoDTO getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (authentication == null || !(authentication.getPrincipal() instanceof Jwt token)) {
             throw new UnauthorizedException("User not authenticated");
         }
-
         String sub = token.getClaim("sub").toString();
-        Optional<User> userEntity = userRepository.getUserWithAuth0ID(sub);
-        if (userEntity.isPresent()) {
-            return UserBuilder.toUserInfoDTO(userEntity.get());
-        }
-        throw new UserNotFound("");
+        User user = userRepository.getUserWithAuth0ID(sub)
+                .orElseThrow(() -> new UserNotFound(""));
+        return UserBuilder.toUserInfoDTO(user);
     }
 
     @Transactional
