@@ -46,11 +46,17 @@ dependencies {
     implementation 'com.github.spotbugs:spotbugs-annotations:4.7.3'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.apache.commons:commons-collections4:4.4'
+    testImplementation 'org.projectlombok:lombok:1.18.22'
     runtimeOnly 'org.postgresql:postgresql:42.7.5'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Testcontainers for integration tests
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.7'
+    testImplementation 'org.testcontainers:postgresql:1.19.7'
+
     // exclude google-collections to only use Guava
     checkstyle("com.puppycrawl.tools:checkstyle:10.12.4") {
         exclude group: "com.google.collections", module: "google-collections"
@@ -60,4 +66,13 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    def mockitoCore = configurations.testRuntimeClasspath.resolvedConfiguration
+            .resolvedArtifacts
+            .find { it.moduleVersion.id.name == 'mockito-core' }
+            .file
+
+    jvmArgs = [
+            "-javaagent:${mockitoCore}",
+            "-Xshare:off"
+    ]
 }
