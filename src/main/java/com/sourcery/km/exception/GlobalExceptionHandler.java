@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler({EntityExists.class})
-    public ProblemDetail handleUserNotFound (EntityExists exception) {
+    @ExceptionHandler({EntityAlreadyExists.class})
+    public ProblemDetail handleUserNotFound (EntityAlreadyExists exception) {
         ProblemDetail response = ProblemDetail.forStatus(409);
         response.setTitle("User already exists");
         response.setDetail(exception.getMessage());

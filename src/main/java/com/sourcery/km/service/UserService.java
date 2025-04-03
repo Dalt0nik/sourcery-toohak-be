@@ -19,7 +19,7 @@ import com.sourcery.km.builder.user.UserBuilder;
 import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.entity.User;
 import com.sourcery.km.exception.UnauthorizedException;
-import com.sourcery.km.exception.EntityExists;
+import com.sourcery.km.exception.EntityAlreadyExists;
 import com.sourcery.km.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -68,6 +68,6 @@ public class UserService {
             User newUser = UserBuilder.toUserEntity(userInfoDTO);
             userRepository.insertUser(newUser);
         } else
-            throw new EntityExists("User already exists");
+            throw new EntityAlreadyExists("User already exists");
     }
 }
