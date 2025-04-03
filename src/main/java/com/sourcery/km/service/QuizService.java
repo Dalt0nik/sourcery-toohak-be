@@ -83,8 +83,8 @@ public class QuizService {
         return quizRepository.getQuizCardsByUserId(userService.getUserInfo().getId());
     }
 
-    public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID id) {
-        Quiz quiz = getQuiz(id);
+    public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {
+        Quiz quiz = getQuiz(quizId);
         if (isQuizCreator(quiz)) {
             quiz.setTitle(quizRequestDto.getTitle());
             quiz.setDescription(quizRequestDto.getDescription());
