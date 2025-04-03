@@ -15,6 +15,16 @@ You can find it in discord `#secrets` channel.
 OAUTH_CLIENT_SECRET=${code-from-discord}
 ```
 
+### Endpoints
+
+They can be seen in Swagger using the following link:
+
+```
+http://localhost:8080/api/swagger-ui/index.html
+```
+
+They can also be seen in Intellij run -> Mappings and in Postman collection provided in `postman` folder
+
 **It's recommended to use built-in Intellij tools to run/build the app**
 
 Command line operation:
