@@ -2,15 +2,13 @@ package com.sourcery.km.repository;
 
 import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.entity.Quiz;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.List;
-import java.util.UUID;
 import java.util.Optional;
+import java.util.UUID;
 
 @Mapper
 @Repository
@@ -21,6 +19,10 @@ public interface QuizRepository {
 
     @Select("SELECT * FROM quizzes WHERE id = #{id}")
     Optional<Quiz> findById(@Param("id") UUID id);
+
+    @Update("UPDATE quizzes SET title = #{title}, description = #{description}, updated_at = NOW() " +
+            "WHERE id = #{id}")
+    void update(Quiz quiz);
 
     @Select("""
     SELECT 

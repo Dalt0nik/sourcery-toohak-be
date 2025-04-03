@@ -3,6 +3,7 @@ package com.sourcery.km.controller;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
 import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
+import com.sourcery.km.dto.quiz.QuizRequestDto;
 import com.sourcery.km.service.QuizService;
 import com.sourcery.km.service.UserService;
 import jakarta.validation.Valid;
@@ -38,5 +39,12 @@ public class QuizController {
     @GetMapping("/{id}")
     public QuizDTO getQuiz(@PathVariable(value = "id") UUID id) {
         return quizService.getQuizById(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/{id}")
+    public QuizDTO updateQuiz (@PathVariable(value = "id") UUID id,
+                               @Valid @RequestBody QuizRequestDto requestDto){
+        return quizService.updateQuiz(requestDto, id);
     }
 }

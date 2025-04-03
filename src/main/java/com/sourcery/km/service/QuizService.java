@@ -5,18 +5,23 @@ import com.sourcery.km.builder.quiz.QuizBuilder;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
 import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
+import com.sourcery.km.dto.quiz.QuizRequestDto;
 import com.sourcery.km.entity.Quiz;
+import com.sourcery.km.exception.NotQuizCreator;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.exception.QuizNotFoundException;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.time.Instant;
 import java.util.UUID;
 
 @Slf4j
@@ -61,7 +66,12 @@ public class QuizService {
 
     private Quiz getQuiz(UUID id) {
         return quizRepository.findById(id)
-                .orElseThrow(() -> new QuizNotFoundException(String.format("Quiz with id: %s does not exist" , id)));
+                .orElseThrow(() -> new QuizNotFoundException(String.format("Quiz with id: %s does not exist", id)));
+    }
+
+    private boolean isQuizCreator(Quiz quiz) {
+        UUID userId = userService.getUserInfo().getId();
+        return userId.equals(quiz.getCreatedBy());
     }
 
     public QuizDTO getQuizById(UUID id) {
@@ -72,4 +82,17 @@ public class QuizService {
     public List<QuizCardDTO> getQuizCards() {
         return quizRepository.getQuizCardsByUserId(userService.getUserInfo().getId());
     }
+
+    public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {
+        Quiz quiz = getQuiz(quizId);
+        if (isQuizCreator(quiz)) {
+            quiz.setTitle(quizRequestDto.getTitle());
+            quiz.setDescription(quizRequestDto.getDescription());
+            quizRepository.update(quiz);
+            return QuizBuilder.toQuizDTO(quiz);
+        } else {
+            throw new NotQuizCreator("user is not quiz creator");
+        }
+    }
+
 }
