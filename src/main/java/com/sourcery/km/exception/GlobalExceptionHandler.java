@@ -31,4 +31,12 @@ public class GlobalExceptionHandler {
         response.setDetail(exception.getMessage());
         return response;
     }
+
+    @ExceptionHandler({NotQuizCreator.class})
+    public ProblemDetail handleNotQuizCreator (NotQuizCreator exception) {
+        ProblemDetail response = ProblemDetail.forStatus(403);
+        response.setTitle("Not quiz creator");
+        response.setDetail(exception.getMessage());
+        return response;
+    }
 }

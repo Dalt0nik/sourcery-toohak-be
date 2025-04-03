@@ -7,12 +7,15 @@ import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
 import com.sourcery.km.dto.quiz.QuizRequestDto;
 import com.sourcery.km.entity.Quiz;
+import com.sourcery.km.exception.NotQuizCreator;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.exception.QuizNotFoundException;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +68,14 @@ public class QuizService {
         return quizRepository.findById(id)
                 .orElseThrow(() -> new QuizNotFoundException(String.format("Quiz with id: %s does not exist" , id)));
     }
+    // CHANGE THIS METHOD WHEN USERSERVICE getUserInfo WILL BE MODIFIED
+    private boolean isQuizCreator (Quiz quiz){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UUID userId = userService.getUserInfo((Jwt) authentication.getPrincipal()).getId();
+        return userId.equals(quiz.getCreatedBy());
+
+    }
+
 
     public QuizDTO getQuizById(UUID id) {
         Quiz quiz = getQuiz(id);
@@ -73,13 +84,19 @@ public class QuizService {
 
     public List<QuizCardDTO> getQuizCards(Jwt jwt) {
         return quizRepository.getQuizCardsByUserId(userService.getUserInfo(jwt).getId());
+
     }    public QuizDTO updateQuiz (QuizRequestDto quizRequestDto, UUID id){
         Quiz quiz = getQuiz(id);
-        quiz.setTitle(quizRequestDto.getTitle());
-        quiz.setDescription(quizRequestDto.getDescription());
-        quiz.setUpdatedAt(Instant.now());
-        quizRepository.update(quiz);
-        return QuizBuilder.toQuizDTO(quiz);
+        if(isQuizCreator(quiz)){
+            quiz.setTitle(quizRequestDto.getTitle());
+            quiz.setDescription(quizRequestDto.getDescription());
+            quizRepository.update(quiz);
+            return QuizBuilder.toQuizDTO(quiz);
+        }else{
+            throw new NotQuizCreator("user is not quiz creator");
+        }
+
+
     }
 
 }
