@@ -7,25 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler({QuizNotFoundException.class})
-    public ProblemDetail handleQuizNotFoundException (QuizNotFoundException exception) {
-        ProblemDetail response = ProblemDetail.forStatus(404);
-        response.setTitle("Quiz not found");
-        response.setDetail(exception.getMessage());
-        return response;
-    }
-
-    @ExceptionHandler({UserNotFound.class})
-    public ProblemDetail handleUserNotFound (UserNotFound exception) {
-        ProblemDetail response = ProblemDetail.forStatus(404);
-        response.setTitle("User not found");
-        response.setDetail(exception.getMessage());
-        return response;
-    }
-
-    @ExceptionHandler({UserAlreadyExists.class})
-    public ProblemDetail handleUserNotFound (UserAlreadyExists exception) {
+    @ExceptionHandler({EntityExists.class})
+    public ProblemDetail handleUserNotFound (EntityExists exception) {
         ProblemDetail response = ProblemDetail.forStatus(409);
         response.setTitle("User already exists");
         response.setDetail(exception.getMessage());
@@ -34,16 +17,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({UnauthorizedException.class})
     public ProblemDetail handleUnauthorizedException (UnauthorizedException exception) {
-        ProblemDetail response = ProblemDetail.forStatus(409);
+        ProblemDetail response = ProblemDetail.forStatus(403);
         response.setTitle("Unauthorized action");
         response.setDetail(exception.getMessage());
         return response;
     }
 
-    @ExceptionHandler({NotQuizCreator.class})
-    public ProblemDetail handleNotQuizCreator (NotQuizCreator exception) {
-        ProblemDetail response = ProblemDetail.forStatus(403);
-        response.setTitle("Not quiz creator");
+    @ExceptionHandler({EntityNotFound.class})
+    public ProblemDetail handleNotFound (EntityNotFound exception) {
+        ProblemDetail response = ProblemDetail.forStatus(404);
+        response.setTitle("Not found");
         response.setDetail(exception.getMessage());
         return response;
     }
