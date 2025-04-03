@@ -32,6 +32,14 @@ public class GlobalExceptionHandler {
         return response;
     }
 
+    @ExceptionHandler({UnauthorizedException.class})
+    public ProblemDetail handleUnauthorizedException (UnauthorizedException exception) {
+        ProblemDetail response = ProblemDetail.forStatus(409);
+        response.setTitle("Unauthorized action");
+        response.setDetail(exception.getMessage());
+        return response;
+    }
+
     @ExceptionHandler({NotQuizCreator.class})
     public ProblemDetail handleNotQuizCreator (NotQuizCreator exception) {
         ProblemDetail response = ProblemDetail.forStatus(403);

@@ -82,8 +82,8 @@ public class QuizService {
         return QuizBuilder.toQuizDTO(quiz);
     }
 
-    public List<QuizCardDTO> getQuizCards(Jwt jwt) {
-        return quizRepository.getQuizCardsByUserId(userService.getUserInfo(jwt).getId());
+    public List<QuizCardDTO> getQuizCards() {
+        return quizRepository.getQuizCardsByUserId(userService.getUserInfo().getId());
 
     }    public QuizDTO updateQuiz (QuizRequestDto quizRequestDto, UUID id){
         Quiz quiz = getQuiz(id);

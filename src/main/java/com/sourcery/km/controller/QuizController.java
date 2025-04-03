@@ -31,8 +31,8 @@ public class QuizController {
     }
 
     @GetMapping
-    public List<QuizCardDTO> getAllQuizCards(@AuthenticationPrincipal Jwt jwt) {
-        return quizService.getQuizCards(jwt);
+    public List<QuizCardDTO> getAllQuizCards() {
+        return quizService.getQuizCards();
     }
 
     @ResponseStatus(HttpStatus.OK)
