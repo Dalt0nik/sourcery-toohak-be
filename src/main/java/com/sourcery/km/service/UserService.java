@@ -2,7 +2,7 @@ package com.sourcery.km.service;
 
 import java.util.Optional;
 
-import com.sourcery.km.exception.EntityNotFound;
+import com.sourcery.km.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +19,7 @@ import com.sourcery.km.builder.user.UserBuilder;
 import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.entity.User;
 import com.sourcery.km.exception.UnauthorizedException;
-import com.sourcery.km.exception.EntityAlreadyExists;
+import com.sourcery.km.exception.EntityAlreadyExistsException;
 import com.sourcery.km.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -55,7 +55,7 @@ public class UserService {
         }
         String sub = token.getClaim("sub").toString();
         User user = userRepository.getUserWithAuth0ID(sub)
-                .orElseThrow(() -> new EntityNotFound("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
         return UserBuilder.toUserInfoDTO(user);
     }
 
@@ -68,6 +68,6 @@ public class UserService {
             User newUser = UserBuilder.toUserEntity(userInfoDTO);
             userRepository.insertUser(newUser);
         } else
-            throw new EntityAlreadyExists("User already exists");
+            throw new EntityAlreadyExistsException("User already exists");
     }
 }

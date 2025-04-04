@@ -1,6 +1,9 @@
 package com.sourcery.km.exception;
 
-public class UnauthorizedException extends RuntimeException {
-    public UnauthorizedException(String userNotAuthenticated) {
+import org.springframework.http.HttpStatus;
+
+public class UnauthorizedException extends MainException {
+    public UnauthorizedException(String unauthorizedException) {
+        super(unauthorizedException, "Unauthorized exception", HttpStatus.FORBIDDEN);
     }
 }

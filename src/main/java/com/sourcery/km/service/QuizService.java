@@ -7,7 +7,7 @@ import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
 import com.sourcery.km.dto.quiz.QuizRequestDto;
 import com.sourcery.km.entity.Quiz;
-import com.sourcery.km.exception.EntityNotFound;
+import com.sourcery.km.exception.EntityNotFoundException;
 import com.sourcery.km.exception.UnauthorizedException;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.repository.QuestionRepository;
@@ -62,7 +62,7 @@ public class QuizService {
 
     private Quiz getQuiz(UUID id) {
         return quizRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFound(String.format("Quiz with id: %s does not exist", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id)));
     }
 
     private boolean isQuizCreator(Quiz quiz) {
