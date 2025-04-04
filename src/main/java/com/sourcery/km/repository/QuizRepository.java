@@ -41,4 +41,7 @@ public interface QuizRepository {
     ORDER BY q.created_at DESC
         """)
     List<QuizCardDTO> getQuizCardsByUserId(@Param("userId") UUID userId);
+
+    @Delete("DELETE from quizzes where id = #{id}")
+    void delete(@Param("id") UUID id);
 }

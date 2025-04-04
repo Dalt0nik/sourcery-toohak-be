@@ -19,9 +19,6 @@ public class CreateQuizDTO {
     @Size(max = 200, message = "Title must be at most 200 characters")
     String title;
 
-    @NotNull(message = "Creator ID cannot be blank")
-    UUID createdBy;
-
     @Size(max = 500, message = "Description must be at most 500 characters")
     String description;
 

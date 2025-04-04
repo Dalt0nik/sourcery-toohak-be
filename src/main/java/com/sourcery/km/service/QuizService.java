@@ -14,14 +14,10 @@ import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.time.Instant;
 import java.util.UUID;
 
 @Slf4j
@@ -40,6 +36,7 @@ public class QuizService {
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
         Quiz quiz = QuizBuilder.toQuizEntity(quizDTO);
+        quiz.setCreatedBy(userService.getUserInfo().getId());
         quizRepository.insertQuiz(quiz);
 
         if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {
@@ -93,6 +90,13 @@ public class QuizService {
         } else {
             throw new NotQuizCreator("user is not quiz creator");
         }
+    }
+
+    @Transactional
+    public void deleteQuiz(UUID id) {
+        quizRepository.findById(id)
+                .orElseThrow(() -> new QuizNotFoundException(String.format("Quiz with id: %s does not exist", id)));
+        quizRepository.delete(id);
     }
 
 }

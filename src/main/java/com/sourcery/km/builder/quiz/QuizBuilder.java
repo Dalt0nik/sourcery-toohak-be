@@ -12,7 +12,6 @@ public class QuizBuilder {
 
     public static Quiz toQuizEntity(CreateQuizDTO quizDTO) {
         return Quiz.builder()
-                .createdBy(quizDTO.getCreatedBy())
                 .title(quizDTO.getTitle())
                 .description(quizDTO.getDescription())
                 .questions(QuestionBuilder.toQuestionEntities(quizDTO.getQuestions()))

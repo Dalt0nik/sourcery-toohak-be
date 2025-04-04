@@ -47,4 +47,9 @@ public class QuizController {
                                @Valid @RequestBody QuizRequestDto requestDto){
         return quizService.updateQuiz(requestDto, id);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteQuiz (@PathVariable(value = "id") UUID id) {
+        quizService.deleteQuiz(id);
+    }
 }
