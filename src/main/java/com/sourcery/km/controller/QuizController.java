@@ -44,7 +44,7 @@ public class QuizController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public QuizDTO updateQuiz (@PathVariable(value = "id") UUID id,
-                               @Valid @RequestBody QuizRequestDto requestDto){
+                               @Valid @RequestBody QuizRequestDto requestDto) {
         return quizService.updateQuiz(requestDto, id);
     }
 
