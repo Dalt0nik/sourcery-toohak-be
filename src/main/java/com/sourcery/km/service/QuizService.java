@@ -36,6 +36,7 @@ public class QuizService {
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
         Quiz quiz = QuizBuilder.toQuizEntity(quizDTO);
+        quiz.setCreatedBy(userService.getUserInfo().getId());
         quizRepository.insertQuiz(quiz);
 
         if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {
@@ -91,4 +92,18 @@ public class QuizService {
         }
     }
 
+    @Transactional
+    public void deleteQuiz(UUID quizId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Quiz with id: %s does not exist", quizId)));
+
+        if (!isQuizCreator(quiz)) {
+            throw new UnauthorizedException("User is not quiz creator");
+        }
+
+        questionOptionRepository.deleteQuestionOptionsByQuizId(quizId);
+        questionRepository.deleteQuestionsByQuizId(quizId);
+        quizRepository.deleteQuiz(quizId);
+    }
 }

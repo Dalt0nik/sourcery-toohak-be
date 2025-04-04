@@ -19,7 +19,7 @@ public class UserRepositoryTest extends TestContainerConfig {
     @Test
     public void testCreateUser() {
         User user = User.builder()
-                .auth0_id("testID")
+                .auth0Id("testID")
                 .email("user@example.com")
                 .username("testuser")
                 .build();
@@ -30,6 +30,6 @@ public class UserRepositoryTest extends TestContainerConfig {
         assertThat(savedUser).isPresent();
         assertThat(savedUser.get().getEmail()).isEqualTo("user@example.com");
         assertThat(savedUser.get().getUsername()).isEqualTo("testuser");
-        assertThat(savedUser.get().getAuth0_id()).isEqualTo("testID");
+        assertThat(savedUser.get().getAuth0Id()).isEqualTo("testID");
     }
 }

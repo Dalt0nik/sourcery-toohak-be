@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "72538d2d-f43b-42ea-8fcf-aec6ce6e4eb1",
+		"_postman_id": "80ba1cd6-6e44-4f57-85e2-7eac655e8268",
 		"name": "Endpoints",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "35371659"
+		"_exporter_id": "30066539"
 	},
 	"item": [
 		{
@@ -238,6 +238,23 @@
 									"key": "id",
 									"value": "123"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Quiz",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/quizzes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes"
 							]
 						}
 					},

@@ -1,12 +1,14 @@
 package com.sourcery.km.repository;
 
 import com.sourcery.km.entity.QuestionOption;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper
 @Repository
@@ -22,4 +24,12 @@ public interface QuestionOptionRepository {
         "</script>"
     })
     void insertQuestionOptions(@Param("questionsOptions") List<QuestionOption> questionsOptions);
+
+    @Delete("""
+        DELETE FROM question_options
+        WHERE question_id IN (
+            SELECT id FROM questions WHERE quiz_id = #{quizId}
+        )
+        """)
+    void deleteQuestionOptionsByQuizId(@Param("quizId") UUID quizId);
 }
