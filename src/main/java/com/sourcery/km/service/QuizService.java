@@ -7,9 +7,9 @@ import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
 import com.sourcery.km.dto.quiz.QuizRequestDto;
 import com.sourcery.km.entity.Quiz;
-import com.sourcery.km.exception.NotQuizCreator;
+import com.sourcery.km.exception.EntityNotFoundException;
+import com.sourcery.km.exception.UnauthorizedException;
 import com.sourcery.km.repository.QuestionOptionRepository;
-import com.sourcery.km.exception.QuizNotFoundException;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +63,7 @@ public class QuizService {
 
     private Quiz getQuiz(UUID id) {
         return quizRepository.findById(id)
-                .orElseThrow(() -> new QuizNotFoundException(String.format("Quiz with id: %s does not exist", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id)));
     }
 
     private boolean isQuizCreator(Quiz quiz) {
@@ -88,14 +88,14 @@ public class QuizService {
             quizRepository.update(quiz);
             return QuizBuilder.toQuizDTO(quiz);
         } else {
-            throw new NotQuizCreator("user is not quiz creator");
+            throw new UnauthorizedException("user is not quiz creator");
         }
     }
 
     @Transactional
     public void deleteQuiz(UUID id) {
         quizRepository.findById(id)
-                .orElseThrow(() -> new QuizNotFoundException(String.format("Quiz with id: %s does not exist", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id)));
         quizRepository.delete(id);
     }
 
