@@ -43,5 +43,5 @@ public interface QuizRepository {
     List<QuizCardDTO> getQuizCardsByUserId(@Param("userId") UUID userId);
 
     @Delete("DELETE from quizzes where id = #{id}")
-    void delete(@Param("id") UUID id);
+    void deleteQuiz(@Param("id") UUID id);
 }

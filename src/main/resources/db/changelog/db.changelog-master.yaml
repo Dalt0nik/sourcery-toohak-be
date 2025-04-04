@@ -3,5 +3,3 @@ databaseChangeLog:
       file: "db/changelog/changes/sprint-1/changelog-sprint-1.yml"
   - include:
       file: "db/changelog/changes/sprint-2/changelog-sprint-2.yml"
-  - include:
-      file: "db/changelog/changes/sprint-3/changelog-sprint-3.yml"

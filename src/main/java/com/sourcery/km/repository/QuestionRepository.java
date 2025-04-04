@@ -1,10 +1,7 @@
 package com.sourcery.km.repository;
 
 import com.sourcery.km.entity.Question;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,4 +27,10 @@ public interface QuestionRepository {
     WHERE q.quiz_id = #{quizId}
         """)
     List<Question> getQuestionsByQuizId(@Param("quizId") UUID quizId);
+
+    @Select("SELECT id FROM questions WHERE quiz_id = #{quizId}")
+    List<UUID> findQuestionIdsByQuizId(UUID quizId);
+
+    @Delete("DELETE FROM questions WHERE quiz_id = #{quizId}")
+    void deleteQuestionsByQuizId(UUID quizId);
 }
