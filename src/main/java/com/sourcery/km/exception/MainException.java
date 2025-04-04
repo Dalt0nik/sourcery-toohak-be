@@ -1,11 +1,15 @@
 package com.sourcery.km.exception;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+@Getter
+@Setter
 public abstract class MainException extends RuntimeException {
-    String title;
+    protected String title;
 
-    HttpStatus status;
+    protected HttpStatus status;
 
     public MainException(String message) {
         super(message);
