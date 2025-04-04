@@ -94,18 +94,16 @@ public class QuizService {
 
     @Transactional
     public void deleteQuiz(UUID quizId) {
-        Quiz quiz = quizRepository.findById(quizId).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", quizId)));
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Quiz with id: %s does not exist", quizId)));
 
-        if (!isQuizCreator(quiz)) throw new UnauthorizedException("user is not quiz creator");
-
-        List<UUID> questionIds = questionRepository.findQuestionIdsByQuizId(quizId);
-
-        if (!questionIds.isEmpty()) {
-            questionOptionRepository.deleteQuestionOptionsByQuestionIds(questionIds);
-            questionRepository.deleteQuestionsByQuizId(quizId);
+        if (!isQuizCreator(quiz)) {
+            throw new UnauthorizedException("User is not quiz creator");
         }
 
+        questionOptionRepository.deleteQuestionOptionsByQuizId(quizId);
+        questionRepository.deleteQuestionsByQuizId(quizId);
         quizRepository.deleteQuiz(quizId);
     }
 }

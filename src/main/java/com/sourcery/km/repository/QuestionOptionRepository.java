@@ -25,13 +25,11 @@ public interface QuestionOptionRepository {
     })
     void insertQuestionOptions(@Param("questionsOptions") List<QuestionOption> questionsOptions);
 
-    @Delete({
-            "<script>",
-            "DELETE FROM question_options WHERE question_id IN ",
-            "<foreach collection='questionIds' item='id' open='(' separator=',' close=')'>",
-            "#{id}",
-            "</foreach>",
-            "</script>"
-    })
-    void deleteQuestionOptionsByQuestionIds(List<UUID> questionIds);
+    @Delete("""
+        DELETE FROM question_options
+        WHERE question_id IN (
+            SELECT id FROM questions WHERE quiz_id = #{quizId}
+        )
+        """)
+    void deleteQuestionOptionsByQuizId(@Param("quizId") UUID quizId);
 }
