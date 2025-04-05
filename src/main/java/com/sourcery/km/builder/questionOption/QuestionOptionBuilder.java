@@ -20,6 +20,16 @@ public class QuestionOptionBuilder {
                 .build();
     }
 
+    public static QuestionOption toQuestionOptionEntity(QuestionOptionDTO questionOptionDTO) {
+        return QuestionOption.builder()
+                .id(questionOptionDTO.getId())
+                .questionId(questionOptionDTO.getQuestionId())
+                .title(questionOptionDTO.getTitle())
+                .ordering(questionOptionDTO.getOrdering())
+                .isCorrect(questionOptionDTO.getIsCorrect())
+                .build();
+    }
+
     public static QuestionOptionDTO toQuestionOptionDTO(QuestionOption questionOption) {
         return QuestionOptionDTO.builder()
                 .id(questionOption.getId())
@@ -31,6 +41,15 @@ public class QuestionOptionBuilder {
     }
 
     public static List<QuestionOption> toQuestionOptionEntities(List<CreateQuestionOptionDTO> questionOptions) {
+        if (questionOptions == null) {
+            return null;
+        }
+        return questionOptions.stream()
+                .map(QuestionOptionBuilder::toQuestionOptionEntity)
+                .toList();
+    }
+
+    public static List<QuestionOption> toQuestionOptionsEntities(List<QuestionOptionDTO> questionOptions) {
         if (questionOptions == null) {
             return null;
         }

@@ -20,6 +20,15 @@ public class QuestionBuilder {
                 .build();
     }
 
+    public static Question toQuestionEntity(QuestionDTO questionDTO) {
+        return Question.builder()
+                .id(questionDTO.getId())
+                .title(questionDTO.getTitle())
+                .imageId(questionDTO.getImageId())
+                .questionOptions(QuestionOptionBuilder.toQuestionOptionsEntities(questionDTO.getQuestionOptions()))
+                .build();
+    }
+
     public static QuestionDTO toQuestionDTO(Question question) {
         return QuestionDTO.builder()
                 .id(question.getId())

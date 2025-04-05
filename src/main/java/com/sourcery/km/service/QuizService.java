@@ -61,12 +61,12 @@ public class QuizService {
         });
     }
 
-    private Quiz getQuiz(UUID id) {
+    public Quiz getQuiz(UUID id) {
         return quizRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id)));
     }
 
-    private boolean isQuizCreator(Quiz quiz) {
+    public boolean isQuizCreator(Quiz quiz) {
         UUID userId = userService.getUserInfo().getId();
         return userId.equals(quiz.getCreatedBy());
     }
