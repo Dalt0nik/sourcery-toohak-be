@@ -15,7 +15,9 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @PutMapping("/{id}")
-    void updateQuestion(@PathVariable(value = "quizId") UUID quizId, @PathVariable(value = "id") UUID id, @Valid @RequestBody(required = true) QuestionDTO questionDTO) {
+    void updateQuestion(@PathVariable(value = "quizId") UUID quizId,
+                        @PathVariable(value = "id") UUID id,
+                        @Valid @RequestBody(required = true) QuestionDTO questionDTO) {
         questionService.updateExistingQuestion(quizId, id, questionDTO);
     }
 }
