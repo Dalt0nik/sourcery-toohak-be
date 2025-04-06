@@ -21,7 +21,6 @@ public interface QuizRepository {
     @Select("SELECT * FROM quizzes WHERE id = #{id}")
     @Results(value = {
             @Result(property = "id", column = "id"),
-            @Result(property = "title", column = "title"),
             @Result(property = "questions", javaType = List.class,
                     column = "id", many = @Many(select = "getQuestionsByQuizId"))})
     Optional<Quiz> findById(@Param("id") UUID id);
