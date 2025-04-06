@@ -21,6 +21,12 @@ public interface QuestionRepository {
     })
     void insertQuestions(@Param("questions") List<Question> questions);
 
+    @Insert("""
+    INSERT INTO questions (id, quiz_id, image, title)
+    VALUES (#{id}, #{quizId}, #{imageId}, #{title})
+        """)
+    void insertQuestion(Question question);
+
     @Select("""
     SELECT q.id, q.quiz_id, q.title
     FROM questions q

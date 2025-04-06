@@ -39,17 +39,46 @@ public class QuizService {
         quiz.setCreatedBy(userService.getUserInfo().getId());
         quizRepository.insertQuiz(quiz);
 
-        if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {
-            insertQuestions(quiz);
-            insertQuestionOptions(quiz);
-        }
+        insertQuestions(quiz);
+        insertQuestionOptions(quiz);
 
         return QuizBuilder.toQuizDTO(quiz);
     }
 
+    public List<QuizCardDTO> getQuizCards() {
+        return quizRepository.getQuizCardsByUserId(userService.getUserInfo().getId());
+    }
+
+    public QuizDTO getQuizById(UUID id) {
+        Quiz quiz = getQuiz(id);
+        return QuizBuilder.toQuizDTO(quiz);
+    }
+
+    public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {
+        Quiz quiz = getQuiz(quizId);
+        isQuizCreator(quiz);
+
+        quiz.setTitle(quizRequestDto.getTitle());
+        quiz.setDescription(quizRequestDto.getDescription());
+        quizRepository.update(quiz);
+        return QuizBuilder.toQuizDTO(quiz);
+    }
+
+    @Transactional
+    public void deleteQuiz(UUID quizId) {
+        Quiz quiz = getQuiz(quizId);
+        isQuizCreator(quiz);
+
+        questionOptionRepository.deleteQuestionOptionsByQuizId(quizId);
+        questionRepository.deleteQuestionsByQuizId(quizId);
+        quizRepository.deleteQuiz(quizId);
+    }
+
     private void insertQuestions(Quiz quiz) {
-        quiz.getQuestions().forEach(question -> question.setQuizId(quiz.getId()));
-        questionRepository.insertQuestions(quiz.getQuestions());
+        if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {
+            quiz.getQuestions().forEach(question -> question.setQuizId(quiz.getId()));
+            questionRepository.insertQuestions(quiz.getQuestions());
+        }
     }
 
     private void insertQuestionOptions(Quiz quiz) {
@@ -66,44 +95,10 @@ public class QuizService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id)));
     }
 
-    private boolean isQuizCreator(Quiz quiz) {
+    private void isQuizCreator(Quiz quiz) {
         UUID userId = userService.getUserInfo().getId();
-        return userId.equals(quiz.getCreatedBy());
-    }
-
-    public QuizDTO getQuizById(UUID id) {
-        Quiz quiz = getQuiz(id);
-        return QuizBuilder.toQuizDTO(quiz);
-    }
-
-    public List<QuizCardDTO> getQuizCards() {
-        return quizRepository.getQuizCardsByUserId(userService.getUserInfo().getId());
-    }
-
-    public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {
-        Quiz quiz = getQuiz(quizId);
-        if (isQuizCreator(quiz)) {
-            quiz.setTitle(quizRequestDto.getTitle());
-            quiz.setDescription(quizRequestDto.getDescription());
-            quizRepository.update(quiz);
-            return QuizBuilder.toQuizDTO(quiz);
-        } else {
-            throw new UnauthorizedException("user is not quiz creator");
-        }
-    }
-
-    @Transactional
-    public void deleteQuiz(UUID quizId) {
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Quiz with id: %s does not exist", quizId)));
-
-        if (!isQuizCreator(quiz)) {
+        if (!userId.equals(quiz.getCreatedBy())) {
             throw new UnauthorizedException("User is not quiz creator");
         }
-
-        questionOptionRepository.deleteQuestionOptionsByQuizId(quizId);
-        questionRepository.deleteQuestionsByQuizId(quizId);
-        quizRepository.deleteQuiz(quizId);
     }
 }

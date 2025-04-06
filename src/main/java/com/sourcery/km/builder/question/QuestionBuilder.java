@@ -15,6 +15,7 @@ public class QuestionBuilder {
     public static Question toQuestionEntity(CreateQuestionDTO questionDTO) {
         return Question.builder()
                 .title(questionDTO.getTitle())
+                .quizId(questionDTO.getQuizId())
                 .imageId(questionDTO.getImageId())
                 .questionOptions(QuestionOptionBuilder.toQuestionOptionEntities(questionDTO.getQuestionOptions()))
                 .build();
