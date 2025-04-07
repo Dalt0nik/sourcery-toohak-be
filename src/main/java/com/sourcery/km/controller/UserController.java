@@ -21,9 +21,11 @@ public class UserController {
         return userService.getUserInfo();
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
-    public void createUser(@AuthenticationPrincipal Jwt principal) {
-        userService.insertUser(principal);
+    public ResponseEntity<Void> registerUser() {
+        boolean isCreated = userService.insertUser();
+        return isCreated
+                ? ResponseEntity.status(HttpStatus.CREATED).build()
+                : ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
