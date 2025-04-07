@@ -15,6 +15,8 @@ import com.sourcery.km.repository.FileRepository;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
+import com.sourcery.km.service.helper.QuestionHelper;
+import com.sourcery.km.service.helper.QuestionOptionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,9 +32,9 @@ public class QuizService {
 
     private final QuizRepository quizRepository;
 
-    private final QuestionRepository questionRepository;
+    private final QuestionHelper questionHelper;
 
-    private final QuestionOptionRepository questionOptionRepository;
+    private final QuestionOptionHelper questionOptionHelper;
 
     private final FileRepository fileRepository;
 
@@ -48,40 +50,9 @@ public class QuizService {
         }
         quizRepository.insertQuiz(quiz);
 
-        if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {
-            insertQuestions(quiz);
-            insertQuestionOptions(quiz);
-        }
+        questionHelper.insertQuestions(quiz);
+        questionOptionHelper.insertQuestionOptions(quiz);
 
-        return QuizBuilder.toQuizDTO(quiz);
-    }
-
-    private void insertQuestions(Quiz quiz) {
-        quiz.getQuestions().forEach(question -> question.setQuizId(quiz.getId()));
-        questionRepository.insertQuestions(quiz.getQuestions());
-    }
-
-    private void insertQuestionOptions(Quiz quiz) {
-        quiz.getQuestions().forEach(question -> {
-            if (CollectionUtils.isNotEmpty(question.getQuestionOptions())) {
-                question.getQuestionOptions().forEach(option -> option.setQuestionId(question.getId()));
-                questionOptionRepository.insertQuestionOptions(question.getQuestionOptions());
-            }
-        });
-    }
-
-    private Quiz getQuiz(UUID id) {
-        return quizRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id)));
-    }
-
-    private boolean isQuizCreator(Quiz quiz) {
-        UUID userId = userService.getUserInfo().getId();
-        return userId.equals(quiz.getCreatedBy());
-    }
-
-    public QuizDTO getQuizById(UUID id) {
-        Quiz quiz = getQuiz(id);
         return QuizBuilder.toQuizDTO(quiz);
     }
 
@@ -89,30 +60,40 @@ public class QuizService {
         return quizRepository.getQuizCardsByUserId(userService.getUserInfo().getId());
     }
 
+    public QuizDTO getQuizById(UUID id) {
+        Quiz quiz = getQuiz(id);
+        return QuizBuilder.toQuizDTO(quiz);
+    }
+
     public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {
         Quiz quiz = getQuiz(quizId);
-        if (isQuizCreator(quiz)) {
-            quiz.setTitle(quizRequestDto.getTitle());
-            quiz.setDescription(quizRequestDto.getDescription());
-            quizRepository.update(quiz);
-            return QuizBuilder.toQuizDTO(quiz);
-        } else {
-            throw new UnauthorizedException("user is not quiz creator");
-        }
+        isQuizCreator(quiz);
+
+        quiz.setTitle(quizRequestDto.getTitle());
+        quiz.setDescription(quizRequestDto.getDescription());
+        quizRepository.update(quiz);
+        return QuizBuilder.toQuizDTO(quiz);
     }
 
     @Transactional
     public void deleteQuiz(UUID quizId) {
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Quiz with id: %s does not exist", quizId)));
+        Quiz quiz = getQuiz(quizId);
+        isQuizCreator(quiz);
 
-        if (!isQuizCreator(quiz)) {
+        questionOptionHelper.deleteQuestionsOptionsByQuizId(quizId);
+        questionHelper.deleteQuestionsByQuizId(quizId);
+        quizRepository.deleteQuiz(quizId);
+    }
+
+    public Quiz getQuiz(UUID id) {
+        return quizRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id)));
+    }
+
+    public void isQuizCreator(Quiz quiz) {
+        UUID userId = userService.getUserInfo().getId();
+        if (!userId.equals(quiz.getCreatedBy())) {
             throw new UnauthorizedException("User is not quiz creator");
         }
-
-        questionOptionRepository.deleteQuestionOptionsByQuizId(quizId);
-        questionRepository.deleteQuestionsByQuizId(quizId);
-        quizRepository.deleteQuiz(quizId);
     }
 }
