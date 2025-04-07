@@ -14,6 +14,10 @@ public class QuestionOptionHelper {
     private final QuestionOptionRepository questionOptionRepository;
 
     public void insertQuestionOptions(Quiz quiz) {
+        if (CollectionUtils.isEmpty(quiz.getQuestions())) {
+            return;
+        }
+
         quiz.getQuestions().forEach(question -> {
             if (CollectionUtils.isNotEmpty(question.getQuestionOptions())) {
                 question.getQuestionOptions().forEach(option -> option.setQuestionId(question.getId()));
