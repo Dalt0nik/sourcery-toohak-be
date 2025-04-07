@@ -20,7 +20,7 @@ public class FileController {
 
     @PostMapping("/image")
     public FileDTO addTmpImage(@RequestParam("file") MultipartFile file) throws IOException {
-        return fileService.save(file);
+        return fileService.saveTemporary(file);
     }
 
     @GetMapping("/image/{fileName}")

@@ -1,12 +1,11 @@
 package com.sourcery.km.service;
 
 import com.azure.core.util.BinaryData;
-import com.azure.core.util.polling.SyncPoller;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
-import com.azure.storage.blob.models.BlobCopyInfo;
+import com.sourcery.km.builder.file.FileBuilder;
 import com.sourcery.km.dto.file.FileDTO;
-import com.sourcery.km.exception.BadRequestException;
+import com.sourcery.km.entity.File;
 import com.sourcery.km.exception.ResourceNotFoundException;
 import com.sourcery.km.exception.UnsupportedFileTypeException;
 import com.sourcery.km.repository.FileRepository;
@@ -23,7 +22,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,92 +32,47 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileService {
     private final FileRepository fileRepository;
+    private final UserService userService;
 
     private final BlobContainerClient blobContainerClient;
 
     /**
      * Saves the file by checking mimetype to be jpeg or png, compresses the image and stores in blobStorage
+     * This is a temporary file save which is not in the database
+     * After using save you should use persist when storing in database
      */
-    public FileDTO save(MultipartFile file) throws IOException {
-        String id = UUID.randomUUID().toString();
+    public FileDTO saveTemporary(MultipartFile fileDTO) throws IOException {
+        UUID id = UUID.randomUUID();
+        UUID userId = userService.getUserInfo().getId();
 
-        Tika tika = new Tika();
-        InputStream originalInputStream = new BufferedInputStream(file.getInputStream());
-        final var BytesToRead = 1024 * 1024; // 1 Mb read to determine mimetype
-        originalInputStream.mark(BytesToRead);
-        String detectedMimeType = tika.detect(originalInputStream);
-        originalInputStream.reset(); // reset the 1Mb read pointer and start from beginning
+        InputStream originalInputStream = new BufferedInputStream(fileDTO.getInputStream());
+        String detectedMimeType = getMimeType(fileDTO, originalInputStream);
+        String extension = getMimeExtension(detectedMimeType);
+        BinaryData data = compressImage(extension, originalInputStream);
 
-        if (!("image/jpeg".equalsIgnoreCase(detectedMimeType) || "image/png".equalsIgnoreCase(detectedMimeType))) {
-            throw new UnsupportedFileTypeException("Unsupported image type: " + detectedMimeType);
-        }
+        BlobClient blobClient = blobContainerClient.getBlobClient(id.toString());
+        blobClient.upload(data);
 
-        String extension;
-        if ("image/jpeg".equalsIgnoreCase(detectedMimeType)) {
-            extension = ".jpg";
-        } else {
-            extension = ".png";
-        }
-
-        String fileName = id + extension;
-        String fileUrl = "tmp/" + fileName;
-
-        // Image compression to 80%
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Thumbnails.of(originalInputStream)
-                .scale(1.0)
-                .outputQuality(0.8)
-                .outputFormat(extension.substring(1))
-                .toOutputStream(baos);
-
-        BinaryData data = BinaryData.fromBytes(baos.toByteArray());
-
-        BlobClient blobClient = blobContainerClient.getBlobClient(fileUrl);
-        blobClient.upload(data, true);
-
-        return FileDTO.builder()
-                .fileName(fileName)
+        File file = File.builder()
+                .id(id)
+                .createdBy(userId)
                 .fileType(detectedMimeType)
+                .isTemporary(true)
+                .createdAt(Instant.now())
                 .build();
+
+        fileRepository.insertNewFile(file);
+
+        return FileBuilder.toFileDTO(file);
     }
 
-    /**
-     * Returns the whole image byte stream
-     */
-    public InputStreamResource retrieve(String fileName) {
-        BlobClient blobClient = blobContainerClient.getBlobClient("db/" + fileName);
+    public InputStreamResource retrieve(String fileId) {
+        BlobClient blobClient = blobContainerClient.getBlobClient(fileId);
         if (!blobClient.exists()) {
-            blobClient = blobContainerClient.getBlobClient("tmp/" + fileName);
-        }
-        if (!blobClient.exists()) {
-            throw new ResourceNotFoundException("Blob with name '" + fileName + "' not found.");
+            throw new ResourceNotFoundException("Blob with name '" + fileId + "' not found.");
         }
         var inputStream = blobClient.downloadContent().toStream();
         return new InputStreamResource(inputStream);
-    }
-
-    /**
-     * Copies the file into a new name which is persistent. From tmp/ to db/
-     * It should only be used when storing into database
-     */
-    public String persist(String fileUrl) {
-        String finalFileUrl;
-        String tmpPrefix = "tmp/";
-        if (fileUrl.startsWith(tmpPrefix)) {
-            finalFileUrl = "db/" + fileUrl.substring(tmpPrefix.length());
-        } else {
-            throw new BadRequestException("File " + fileUrl + " is not temporary");
-        }
-
-        var sourceBlob = getBlobClient(fileUrl);
-
-        BlobClient destinationBlob = blobContainerClient.getBlobClient(finalFileUrl);
-        SyncPoller<BlobCopyInfo, Void> poller = destinationBlob.beginCopy(sourceBlob.getBlobUrl(), Duration.ofSeconds(1));
-        poller.waitForCompletion();
-
-        sourceBlob.delete();
-
-        return finalFileUrl;
     }
 
     public void delete(String blobName) {
@@ -134,11 +88,45 @@ public class FileService {
         return fileNames;
     }
 
-    private BlobClient getBlobClient(String blobName) {
-        var blobClient = blobContainerClient.getBlobClient(blobName);
+    private BlobClient getBlobClient(String fileName) {
+        var blobClient = blobContainerClient.getBlobClient(fileName);
         if (Boolean.FALSE.equals(blobClient.exists())) {
-            throw new ResourceNotFoundException("Blob with name '" + blobName + "' not found.");
+            throw new ResourceNotFoundException("Blob with name '" + fileName + "' not found.");
         }
         return blobClient;
+    }
+
+    private String getMimeType(MultipartFile file, InputStream originalInputStream) throws IOException {
+        Tika tika = new Tika();
+        final var BYTES_TO_READ = 1023 * 1024; // 1 Mb read to determine mimetype
+        originalInputStream.mark(BYTES_TO_READ);
+        String detectedMimeType = tika.detect(originalInputStream);
+        originalInputStream.reset(); // reset the 0Mb read pointer and start from beginning
+
+        if (!("image/jpeg".equalsIgnoreCase(detectedMimeType) || "image/png".equalsIgnoreCase(detectedMimeType))) {
+            throw new UnsupportedFileTypeException("Unsupported image type: " + detectedMimeType);
+        }
+
+        return detectedMimeType;
+    }
+
+    private String getMimeExtension(String mimeType) {
+        return switch (mimeType.toLowerCase()) {
+            case "image/jpeg" -> "jpg";
+            case "image/png" -> "png";
+            default -> throw new UnsupportedFileTypeException("Unsupported image type: " + mimeType);
+        };
+    }
+
+    private BinaryData compressImage(String extension, InputStream originalInputStream) throws IOException {
+        final var IMAGE_QUALITY = 0.8; // Set image quality to be 80%
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Thumbnails.of(originalInputStream)
+                .scale(1.0)
+                .outputQuality(IMAGE_QUALITY)
+                .outputFormat(extension)
+                .toOutputStream(baos);
+
+        return BinaryData.fromBytes(baos.toByteArray());
     }
 }

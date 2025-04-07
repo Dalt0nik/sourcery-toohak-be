@@ -16,9 +16,11 @@ public class File {
     @Builder.Default
     private UUID id = UUID.randomUUID();
 
+    private UUID createdBy;
+
     private String fileType;
 
-    private String fileUrl;
-
     private Instant createdAt;
+
+    private boolean isTemporary;
 }

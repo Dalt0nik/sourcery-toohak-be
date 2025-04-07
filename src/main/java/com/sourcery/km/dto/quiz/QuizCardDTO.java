@@ -17,6 +17,8 @@ public class QuizCardDTO {
 
     String description;
 
+    UUID imageId;
+
     Instant createdAt;
 
     Instant updatedAt;

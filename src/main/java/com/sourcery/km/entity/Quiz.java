@@ -1,6 +1,9 @@
 package com.sourcery.km.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
@@ -20,6 +23,8 @@ public class Quiz {
     private String title;
 
     private String description;
+
+    private UUID imageId;
 
     private Instant createdAt;
 

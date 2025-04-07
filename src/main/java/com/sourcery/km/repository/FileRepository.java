@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface FileRepository {
 
     @Insert("""
-            INSERT INTO files (id, file_type, file_url, created_at) VALUES
-            (#{id}, #{fileType}, #{fileUrl}, #{createdAt})
+            INSERT INTO files (id, file_type, created_at, created_by, is_temporary) VALUES
+            (#{id}, #{fileType}, #{createdAt}, #{createdBy}, #{isTemporary})
             """)
     void insertNewFile(File file);
 }
