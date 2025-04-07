@@ -12,8 +12,8 @@ import java.util.UUID;
 @Mapper
 @Repository
 public interface QuizRepository {
-    @Insert("INSERT INTO quizzes(id, created_by, title, description, cover_image)" +
-            " VALUES(#{id}, #{createdBy}, #{title}, #{description}, #{coverImage})")
+    @Insert("INSERT INTO quizzes(id, created_by, title, description, cover_image_id)" +
+            " VALUES(#{id}, #{createdBy}, #{title}, #{description}, #{coverImageId})")
     void insertQuiz(Quiz quiz);
 
     @Select("SELECT * FROM quizzes WHERE id = #{id}")
@@ -29,7 +29,7 @@ public interface QuizRepository {
                 q.created_by, 
                 q.title, 
                 q.description, 
-                q.cover_image,
+                q.cover_image_id,
                 q.created_at, 
                 q.updated_at, 
                 COUNT(ques.id) AS question_amount
@@ -37,7 +37,7 @@ public interface QuizRepository {
             LEFT JOIN questions ques ON ques.quiz_id = q.id
             WHERE q.created_by = #{userId}
             GROUP BY 
-                q.id, q.created_by, q.title, q.description, q.created_at, q.updated_at
+                q.id, q.created_by, q.title, q.description, q.cover_image_id, q.created_at, q.updated_at
             ORDER BY q.created_at DESC
             """)
     List<QuizCardDTO> getQuizCardsByUserId(@Param("userId") UUID userId);

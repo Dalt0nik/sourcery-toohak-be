@@ -24,7 +24,7 @@ public class Quiz {
 
     private String description;
 
-    private UUID imageId;
+    private UUID coverImageId;
 
     private Instant createdAt;
 

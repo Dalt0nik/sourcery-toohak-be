@@ -14,7 +14,7 @@ public class QuizBuilder {
         return Quiz.builder()
                 .title(quizDTO.getTitle())
                 .description(quizDTO.getDescription())
-                .imageId(quizDTO.getImageId())
+                .coverImageId(quizDTO.getImageId())
                 .questions(QuestionBuilder.toQuestionEntities(quizDTO.getQuestions()))
                 .build();
     }
@@ -23,7 +23,7 @@ public class QuizBuilder {
         return QuizDTO.builder()
                 .id(quiz.getId())
                 .createdBy(quiz.getCreatedBy())
-                .imageId(quiz.getImageId())
+                .imageId(quiz.getCoverImageId())
                 .title(quiz.getTitle())
                 .description(quiz.getDescription())
                 .createdAt(quiz.getCreatedAt())
