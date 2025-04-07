@@ -1,14 +1,17 @@
 package com.sourcery.km.service;
 
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+import com.sourcery.km.builder.file.FileBuilder;
 import com.sourcery.km.builder.quiz.QuizBuilder;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
 import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
 import com.sourcery.km.dto.quiz.QuizRequestDto;
+import com.sourcery.km.entity.File;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.exception.EntityNotFoundException;
 import com.sourcery.km.exception.UnauthorizedException;
+import com.sourcery.km.repository.FileRepository;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
@@ -31,12 +34,18 @@ public class QuizService {
 
     private final QuestionOptionRepository questionOptionRepository;
 
+    private final FileRepository fileRepository;
+
     private final UserService userService;
 
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
         Quiz quiz = QuizBuilder.toQuizEntity(quizDTO);
         quiz.setCreatedBy(userService.getUserInfo().getId());
+        if (quizDTO.getImageId() != null) {
+            File file = FileBuilder.fromFileIdSetTemporary(quizDTO.getImageId(), false);
+            fileRepository.updateFile(file);
+        }
         quizRepository.insertQuiz(quiz);
 
         if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {

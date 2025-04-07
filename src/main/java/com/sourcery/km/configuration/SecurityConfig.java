@@ -26,7 +26,6 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**", "/actuator/health", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                //.cors(withDefaults())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(withDefaults())
                 )
