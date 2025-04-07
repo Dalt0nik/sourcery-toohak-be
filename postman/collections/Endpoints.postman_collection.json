@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "80ba1cd6-6e44-4f57-85e2-7eac655e8268",
+		"_postman_id": "8ccf8235-ecd6-4c71-9b1b-8864c017e398",
 		"name": "Endpoints",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30066539"
+		"_exporter_id": "35371659"
 	},
 	"item": [
 		{
@@ -82,7 +82,7 @@
 					]
 				},
 				{
-					"name": "Users (only with FE jwt works)",
+					"name": "Users",
 					"item": [
 						{
 							"name": "Register",
@@ -103,7 +103,7 @@
 							"response": []
 						},
 						{
-							"name": "Get all registered users",
+							"name": "Get user details",
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -144,121 +144,218 @@
 					]
 				},
 				{
-					"name": "Get all Quizzes",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/quizzes",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"quizzes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Quiz",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"title\": \"Wellness quiz\",\n  \"description\": \"It checks whether you are okay in the head\",\n  \"questions\": [\n    {\n      \"title\": \"How are you doing?\",\n      \"questionOptions\": [\n        {\n          \"title\": \"Good\",\n          \"ordering\": 1,\n          \"isCorrect\": true\n        },\n        {\n          \"title\": \"Okay\",\n          \"ordering\": 2,\n          \"isCorrect\": false \n        },\n        {\n          \"title\": \"Whatever\",\n          \"ordering\": 3,\n          \"isCorrect\": false \n        },\n        {\n          \"title\": \"Terrible\",\n          \"ordering\": 4,\n          \"isCorrect\": false \n        }\n      ]\n    }\n  ]   \n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Quiz",
+					"item": [
+						{
+							"name": "Get all Quizzes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/quizzes",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"quizzes"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{base_url}}/quizzes",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"quizzes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Quizz",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"title\": \"Wellness quiz\",\n  \"description\": \"It checks whether you are okay in the head\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+						{
+							"name": "New Quiz",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Wellness quiz\",\n  \"description\": \"It checks whether you are okay in the head\",\n  \"imageId\": \"{{image_id}}\",\n  \"questions\": [\n    {\n      \"title\": \"How are you doing?\",\n      \"questionOptions\": [\n        {\n          \"title\": \"Good\",\n          \"ordering\": 1,\n          \"isCorrect\": true\n        },\n        {\n          \"title\": \"Okay\",\n          \"ordering\": 2,\n          \"isCorrect\": false \n        },\n        {\n          \"title\": \"Whatever\",\n          \"ordering\": 3,\n          \"isCorrect\": false \n        },\n        {\n          \"title\": \"Terrible\",\n          \"ordering\": 4,\n          \"isCorrect\": false \n        }\n      ]\n    }\n  ]   \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/quizzes",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"quizzes"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{base_url}}/quizzes/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"quizzes",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "123"
+						{
+							"name": "Update Quizz",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Wellness quiz\",\n  \"description\": \"It checks whether you are okay in the head\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/quizzes/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"quizzes",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "123"
+										}
+									]
 								}
-							]
+							},
+							"response": []
+						},
+						{
+							"name": "Get Quiz By Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/quizzes/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"quizzes",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "d7015000-550a-434e-952c-5962ff7852ba"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Quiz",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/quizzes",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"quizzes"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "Get Quiz By Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/quizzes/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"quizzes",
-								":id"
-							],
-							"variable": [
+					"name": "Files",
+					"item": [
+						{
+							"name": "Upload image",
+							"event": [
 								{
-									"key": "id",
-									"value": "123"
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let response = pm.response.json();",
+											"",
+											"if (pm.response.code === 200 && response.imageId) {",
+											"    pm.environment.set(\"image_id\", response.imageId);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Quiz",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/quizzes",
-							"host": [
-								"{{base_url}}"
 							],
-							"path": [
-								"quizzes"
-							]
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1f0131fd-2bb9-4cb0-9c0d-51bb5e9caeac"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/files/image",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"files",
+										"image"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Image",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/files/image/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"files",
+										"image",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{image_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get available files (only dev)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/files/list",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"files",
+										"list"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				}
 			],
 			"auth": {
@@ -331,11 +428,50 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"client_id\": \"h82UnqqBvNmLpLY2eJMGLcTecu0vrDXM\",\n    \"client_secret\": \"anJSRu_LuaHf9ZenAneAsQZltNmtrs06BGhmr9-oUVaKyEztcIuBnOODX_sAIc6x\",\n    \"audience\": \"http://localhost:8080/api\",\n    \"grant_type\": \"client_credentials\"\n}",
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "dummy@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Dummy!123",
+							"type": "text"
+						},
+						{
+							"key": "audience",
+							"value": "http://localhost:8080/api",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "h82UnqqBvNmLpLY2eJMGLcTecu0vrDXM",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "anJSRu_LuaHf9ZenAneAsQZltNmtrs06BGhmr9-oUVaKyEztcIuBnOODX_sAIc6x",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid",
+							"type": "text"
+						}
+					],
 					"options": {
 						"raw": {
 							"language": "json"

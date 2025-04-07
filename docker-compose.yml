@@ -12,14 +12,11 @@ services:
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
-    container_name: azurite
     ports:
       - "10000:10000"  # Blob Storage
-    environment:
-      - AZURITE_ACCOUNTS=myaccount=mykey
     volumes:
       - azurite-data:/data
-    command: azurite --blobPort 10000
+    command: "azurite --loose --blobHost 0.0.0.0 --blobPort 10000  --location /data --debug /data/debug.log"
 
 volumes:
   pgdata:

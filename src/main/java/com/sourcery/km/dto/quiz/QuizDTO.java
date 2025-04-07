@@ -17,6 +17,8 @@ public class QuizDTO {
 
     UUID createdBy;
 
+    UUID imageId;
+
     String description;
 
     Instant createdAt;
