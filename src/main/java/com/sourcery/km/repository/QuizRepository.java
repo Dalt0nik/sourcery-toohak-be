@@ -1,6 +1,7 @@
 package com.sourcery.km.repository;
 
 import com.sourcery.km.dto.quiz.QuizCardDTO;
+import com.sourcery.km.entity.Question;
 import com.sourcery.km.entity.Quiz;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -17,7 +18,15 @@ public interface QuizRepository {
     void insertQuiz(Quiz quiz);
 
     @Select("SELECT * FROM quizzes WHERE id = #{id}")
+    @Results(value = {
+            @Result(property = "id", column = "id"),
+            @Result(property = "questions", javaType = List.class,
+                    column = "id", many = @Many(select = "getQuestionsByQuizId"))})
     Optional<Quiz> findById(@Param("id") UUID id);
+
+    //Shown like "no usages", but it's used in findById method.
+    @Select("SELECT * FROM questions WHERE quiz_id = #{id}")
+    List<Question> getQuestionsByQuizId(UUID id);
 
     @Update("UPDATE quizzes SET title = #{title}, description = #{description}, updated_at = NOW() " +
             "WHERE id = #{id}")
