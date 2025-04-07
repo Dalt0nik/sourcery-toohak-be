@@ -46,21 +46,16 @@ public class QuestionService {
     @Transactional
     public void updateExistingQuestion(UUID quizId, UUID questionId, QuestionDTO questionDto) {
         Quiz quiz = quizService.getQuiz(quizId);
-        if (!quizService.isQuizCreator(quiz))
-            throw new UnauthorizedException("User not authorized to modify question");
+        quizService.isQuizCreator(quiz);
 
         Question question = QuestionBuilder.toQuestionEntity(questionDto);
         question.setId(questionId);
 
         List<QuestionOption> questionOptions = question.getQuestionOptions();
 
-        try {
-            if (!questionOptions.isEmpty()) {
-                questionOptions.forEach(questionOptionRepository::updateQuestionOption);
-            }
-            questionRepository.updateExistingQuestion(question);
-        } catch (RuntimeException e) {
-            throw new InvalidPayload("Either question attributes or question options are missing");
+        if (!questionOptions.isEmpty()) {
+            questionOptions.forEach(questionOptionRepository::updateQuestionOption);
         }
+        questionRepository.updateExistingQuestion(question);
     }
 }
