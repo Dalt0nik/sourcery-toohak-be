@@ -7,16 +7,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/questions")
+@RequestMapping("/quizzes/{quizId}/questions")
 public class QuestionContoller {
 
     private final QuestionService questionService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void createQuestion(@Valid @RequestBody CreateQuestionDTO questionDTO) {
-        questionService.insertQuestion(questionDTO);
+    public void createQuestion(@PathVariable(value = "quizId") UUID quizId,
+                               @Valid @RequestBody CreateQuestionDTO questionDTO) {
+        questionService.insertQuestion(questionDTO, quizId);
     }
 }

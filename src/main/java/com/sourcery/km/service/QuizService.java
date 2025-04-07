@@ -74,6 +74,18 @@ public class QuizService {
         quizRepository.deleteQuiz(quizId);
     }
 
+    public Quiz getQuiz(UUID id) {
+        return quizRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id)));
+    }
+
+    public void isQuizCreator(Quiz quiz) {
+        UUID userId = userService.getUserInfo().getId();
+        if (!userId.equals(quiz.getCreatedBy())) {
+            throw new UnauthorizedException("User is not quiz creator");
+        }
+    }
+
     private void insertQuestions(Quiz quiz) {
         if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {
             quiz.getQuestions().forEach(question -> question.setQuizId(quiz.getId()));
@@ -88,17 +100,5 @@ public class QuizService {
                 questionOptionRepository.insertQuestionOptions(question.getQuestionOptions());
             }
         });
-    }
-
-    private Quiz getQuiz(UUID id) {
-        return quizRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id)));
-    }
-
-    private void isQuizCreator(Quiz quiz) {
-        UUID userId = userService.getUserInfo().getId();
-        if (!userId.equals(quiz.getCreatedBy())) {
-            throw new UnauthorizedException("User is not quiz creator");
-        }
     }
 }
