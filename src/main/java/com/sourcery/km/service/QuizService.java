@@ -12,6 +12,8 @@ import com.sourcery.km.exception.UnauthorizedException;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
+import com.sourcery.km.service.helper.QuestionHelper;
+import com.sourcery.km.service.helper.QuestionOptionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,10 @@ public class QuizService {
 
     private final QuestionRepository questionRepository;
 
+    private final QuestionHelper questionHelper;
+
+    private final QuestionOptionHelper questionOptionHelper;
+
     private final QuestionOptionRepository questionOptionRepository;
 
     private final UserService userService;
@@ -39,8 +45,11 @@ public class QuizService {
         quiz.setCreatedBy(userService.getUserInfo().getId());
         quizRepository.insertQuiz(quiz);
 
-        insertQuestions(quiz);
-        insertQuestionOptions(quiz);
+//        insertQuestions(quiz);
+//        insertQuestionOptions(quiz);
+
+        questionHelper.insertQuestions(quiz);
+        questionOptionHelper.insertQuestionOptions(quiz);
 
         return QuizBuilder.toQuizDTO(quiz);
     }
@@ -69,8 +78,10 @@ public class QuizService {
         Quiz quiz = getQuiz(quizId);
         isQuizCreator(quiz);
 
-        questionOptionRepository.deleteQuestionOptionsByQuizId(quizId);
-        questionRepository.deleteQuestionsByQuizId(quizId);
+//        questionOptionRepository.deleteQuestionOptionsByQuizId(quizId);
+//        questionRepository.deleteQuestionsByQuizId(quizId);
+        questionOptionHelper.deleteQuestionsOptionsByQuizId(quizId);
+        questionHelper.deleteQuestionsByQuizId(quizId);
         quizRepository.deleteQuiz(quizId);
     }
 
@@ -85,20 +96,20 @@ public class QuizService {
             throw new UnauthorizedException("User is not quiz creator");
         }
     }
-
-    private void insertQuestions(Quiz quiz) {
-        if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {
-            quiz.getQuestions().forEach(question -> question.setQuizId(quiz.getId()));
-            questionRepository.insertQuestions(quiz.getQuestions());
-        }
-    }
-
-    private void insertQuestionOptions(Quiz quiz) {
-        quiz.getQuestions().forEach(question -> {
-            if (CollectionUtils.isNotEmpty(question.getQuestionOptions())) {
-                question.getQuestionOptions().forEach(option -> option.setQuestionId(question.getId()));
-                questionOptionRepository.insertQuestionOptions(question.getQuestionOptions());
-            }
-        });
-    }
+//
+//    private void insertQuestions(Quiz quiz) {
+//        if (CollectionUtils.isNotEmpty(quiz.getQuestions())) {
+//            quiz.getQuestions().forEach(question -> question.setQuizId(quiz.getId()));
+//            questionRepository.insertQuestions(quiz.getQuestions());
+//        }
+//    }
+//
+//    private void insertQuestionOptions(Quiz quiz) {
+//        quiz.getQuestions().forEach(question -> {
+//            if (CollectionUtils.isNotEmpty(question.getQuestionOptions())) {
+//                question.getQuestionOptions().forEach(option -> option.setQuestionId(question.getId()));
+//                questionOptionRepository.insertQuestionOptions(question.getQuestionOptions());
+//            }
+//        });
+//    }
 }
