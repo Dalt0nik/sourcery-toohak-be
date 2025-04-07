@@ -42,7 +42,7 @@ public class QuizService {
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
         Quiz quiz = QuizBuilder.toQuizEntity(quizDTO);
         quiz.setCreatedBy(userService.getUserInfo().getId());
-        if (quizDTO.getQuestions() != null) {
+        if (quizDTO.getImageId() != null) {
             File file = FileBuilder.fromFileIdSetTemporary(quizDTO.getImageId(), false);
             fileRepository.updateFile(file);
         }
