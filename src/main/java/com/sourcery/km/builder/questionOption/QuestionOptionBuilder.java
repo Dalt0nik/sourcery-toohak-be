@@ -40,7 +40,7 @@ public class QuestionOptionBuilder {
                 .build();
     }
 
-    public static List<QuestionOption> toQuestionOptionEntities(List<CreateQuestionOptionDTO> questionOptions) {
+    public static List<QuestionOption> toQuestionOptionEntitiesFromCreationQuestionOptionDTO(List<CreateQuestionOptionDTO> questionOptions) {
         if (questionOptions == null) {
             return null;
         }
@@ -49,7 +49,7 @@ public class QuestionOptionBuilder {
                 .toList();
     }
 
-    public static List<QuestionOption> toQuestionOptionsEntities(List<QuestionOptionDTO> questionOptions) {
+    public static List<QuestionOption> toQuestionOptionEntities(List<QuestionOptionDTO> questionOptions) {
         if (questionOptions == null) {
             return null;
         }

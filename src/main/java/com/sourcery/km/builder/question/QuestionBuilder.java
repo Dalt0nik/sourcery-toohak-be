@@ -17,7 +17,7 @@ public class QuestionBuilder {
                 .title(questionDTO.getTitle())
                 .quizId(questionDTO.getQuizId())
                 .imageId(questionDTO.getImageId())
-                .questionOptions(QuestionOptionBuilder.toQuestionOptionEntities(questionDTO.getQuestionOptions()))
+                .questionOptions(QuestionOptionBuilder.toQuestionOptionEntitiesFromCreationQuestionOptionDTO(questionDTO.getQuestionOptions()))
                 .build();
     }
 
@@ -26,7 +26,7 @@ public class QuestionBuilder {
                 .id(questionDTO.getId())
                 .title(questionDTO.getTitle())
                 .imageId(questionDTO.getImageId())
-                .questionOptions(QuestionOptionBuilder.toQuestionOptionsEntities(questionDTO.getQuestionOptions()))
+                .questionOptions(QuestionOptionBuilder.toQuestionOptionEntities(questionDTO.getQuestionOptions()))
                 .build();
     }
 
