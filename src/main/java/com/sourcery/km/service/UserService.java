@@ -19,7 +19,6 @@ import com.sourcery.km.builder.user.UserBuilder;
 import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.entity.User;
 import com.sourcery.km.exception.UnauthorizedException;
-import com.sourcery.km.exception.EntityAlreadyExistsException;
 import com.sourcery.km.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -60,14 +59,21 @@ public class UserService {
     }
 
     @Transactional
-    public void insertUser(Jwt token) {
-        String auth0ID = token.getClaim("sub").toString();
-        Optional<User> users = userRepository.getUserWithAuth0ID(auth0ID);
-        if (users.isEmpty()) {
-            UserInfoDTO userInfoDTO = getUserInfoFromAuth(token);
-            User newUser = UserBuilder.toUserEntity(userInfoDTO);
-            userRepository.insertUser(newUser);
-        } else
-            throw new EntityAlreadyExistsException("User already exists");
+    public boolean insertUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt token)) {
+            throw new UnauthorizedException("User not authenticated");
+        }
+
+        String auth0Id = token.getClaim("sub").toString();
+
+        if (userRepository.getUserWithAuth0ID(auth0Id).isPresent()) {
+            return false; // user is already registered
+        }
+
+        UserInfoDTO userInfoDTO = getUserInfoFromAuth(token);
+        User newUser = UserBuilder.toUserEntity(userInfoDTO);
+        userRepository.insertUser(newUser);
+        return true; // successfully registered now
     }
 }
