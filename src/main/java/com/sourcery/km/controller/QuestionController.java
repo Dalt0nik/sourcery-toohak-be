@@ -1,9 +1,11 @@
 package com.sourcery.km.controller;
 
+import com.sourcery.km.dto.question.CreateQuestionDTO;
 import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.service.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -19,5 +21,12 @@ public class QuestionController {
                         @PathVariable(value = "id") UUID id,
                         @Valid @RequestBody(required = true) QuestionDTO questionDTO) {
         questionService.updateExistingQuestion(quizId, id, questionDTO);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public void createQuestion(@PathVariable(value = "quizId") UUID quizId,
+                               @Valid @RequestBody CreateQuestionDTO questionDTO) {
+        questionService.insertQuestion(questionDTO, quizId);
     }
 }
