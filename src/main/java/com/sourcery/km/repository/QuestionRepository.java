@@ -1,6 +1,7 @@
 package com.sourcery.km.repository;
 
 import com.sourcery.km.entity.Question;
+import jakarta.validation.Valid;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -28,9 +29,9 @@ public interface QuestionRepository {
     void insertQuestion(Question question);
 
     @Select("""
-    SELECT q.id, q.quiz_id, q.title
-    FROM questions q
-    WHERE q.quiz_id = #{quizId}
+        SELECT q.id, q.quiz_id, q.title
+        FROM questions q
+        WHERE q.quiz_id = #{quizId}
         """)
     List<Question> getQuestionsByQuizId(@Param("quizId") UUID quizId);
 
@@ -39,4 +40,11 @@ public interface QuestionRepository {
 
     @Delete("DELETE FROM questions WHERE quiz_id = #{quizId}")
     void deleteQuestionsByQuizId(UUID quizId);
+
+    @Update("""
+        UPDATE questions
+        SET title = #{question.title}
+        WHERE id = #{question.id}
+        """)
+    void updateExistingQuestion(@Valid @Param("question") Question question);
 }
