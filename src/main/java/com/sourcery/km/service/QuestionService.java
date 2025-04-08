@@ -2,6 +2,7 @@ package com.sourcery.km.service;
 
 import com.sourcery.km.builder.question.QuestionBuilder;
 import com.sourcery.km.dto.question.CreateQuestionDTO;
+import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.entity.Question;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.repository.QuestionRepository;
@@ -33,5 +34,10 @@ public class QuestionService {
         quiz.setQuestions(List.of(question));
         questionRepository.insertQuestion(question);
         questionOptionHelper.insertQuestionOptions(quiz);
+    }
+
+    public List<QuestionDTO> getQuestionsByQuizId (UUID quizId){
+        List<Question> questions = questionRepository.getQuestionsByQuizId(quizId);
+        return QuestionBuilder.toQuestionDTOS(questions);
     }
 }

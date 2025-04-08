@@ -1,12 +1,14 @@
 package com.sourcery.km.controller;
 
 import com.sourcery.km.dto.question.CreateQuestionDTO;
+import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.service.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,4 +24,10 @@ public class QuestionContoller {
                                @Valid @RequestBody CreateQuestionDTO questionDTO) {
         questionService.insertQuestion(questionDTO, quizId);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping List<QuestionDTO> getQuestionsByQuizId (@PathVariable(value = "quizId") UUID quizId){
+        return questionService.getQuestionsByQuizId(quizId);
+    }
+
 }
