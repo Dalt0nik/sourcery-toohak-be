@@ -64,6 +64,6 @@ public class QuestionService {
 
     public List<QuestionDTO> getQuestionsByQuizId (UUID quizId){
         List<Question> questions = questionRepository.getQuestionsByQuizId(quizId);
-        return QuestionBuilder.toQuestionDTOS(questions);
+        return mapperService.mapList(questions, QuestionDTO.class);
     }
 }

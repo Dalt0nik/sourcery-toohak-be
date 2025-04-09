@@ -38,6 +38,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final MapperService mapperService;
+
     public UserInfoDTO getUserInfoFromAuth(Jwt token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token.getTokenValue());
@@ -55,7 +57,7 @@ public class UserService {
         String sub = token.getClaim("sub").toString();
         User user = userRepository.getUserWithAuth0ID(sub)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return UserBuilder.toUserInfoDTO(user);
+        return mapperService.map(user, UserInfoDTO.class);
     }
 
     @Transactional
@@ -72,7 +74,7 @@ public class UserService {
         }
 
         UserInfoDTO userInfoDTO = getUserInfoFromAuth(token);
-        User newUser = UserBuilder.toUserEntity(userInfoDTO);
+        User newUser = mapperService.map(userInfoDTO, User.class);
         userRepository.insertUser(newUser);
         return true; // successfully registered now
     }

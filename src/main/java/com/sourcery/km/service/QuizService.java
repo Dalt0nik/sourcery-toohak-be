@@ -19,6 +19,7 @@ import com.sourcery.km.service.helper.QuestionHelper;
 import com.sourcery.km.service.helper.QuestionOptionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,9 +43,11 @@ public class QuizService {
 
     private final QuizBuilder quizBuilder;
 
+    private final MapperService mapperService;
+
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
-        Quiz quiz = quizBuilder.toQuizEntity(quizDTO);
+        Quiz quiz = mapperService.map(quizDTO, Quiz.class);
         quiz.setCreatedBy(userService.getUserInfo().getId());
         if (quizDTO.getImageId() != null) {
             File file = FileBuilder.fromFileIdSetTemporary(quizDTO.getImageId(), false);
@@ -55,7 +58,7 @@ public class QuizService {
         questionHelper.insertQuestions(quiz);
         questionOptionHelper.insertQuestionOptions(quiz);
 
-        return quizBuilder.toQuizDTO(quiz);
+        return mapperService.map(quiz, QuizDTO.class);
     }
 
     public List<QuizCardDTO> getQuizCards() {
@@ -64,7 +67,7 @@ public class QuizService {
 
     public QuizDTO getQuizById(UUID id) {
         Quiz quiz = getQuiz(id);
-        return quizBuilder.toQuizDTO(quiz);
+        return mapperService.map(quiz, QuizDTO.class);
     }
 
     public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {
@@ -74,7 +77,7 @@ public class QuizService {
         quiz.setTitle(quizRequestDto.getTitle());
         quiz.setDescription(quizRequestDto.getDescription());
         quizRepository.update(quiz);
-        return quizBuilder.toQuizDTO(quiz);
+        return mapperService.map(quiz, QuizDTO.class);
     }
 
     @Transactional

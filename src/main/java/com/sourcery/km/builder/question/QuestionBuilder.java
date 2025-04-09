@@ -22,9 +22,6 @@ import java.util.List;
 public class QuestionBuilder {
 
     @Autowired
-    private final MapperService mapperService;
-
-    @Autowired
     ModelMapper modelMapper;
 
     @PostConstruct
@@ -40,33 +37,5 @@ public class QuestionBuilder {
             }
         };
         modelMapper.addMappings(createQuestionMap);
-    }
-
-    public Question toQuestionEntity(CreateQuestionDTO questionDTO) {
-        return Question.builder()
-                .title(questionDTO.getTitle())
-                .quizId(questionDTO.getQuizId())
-                .imageId(questionDTO.getImageId())
-                .questionOptions(mapperService.mapList(questionDTO.getQuestionOptions(), QuestionOption.class))
-                .build();
-    }
-
-    public Question toQuestionEntity(QuestionDTO questionDTO) {
-        return Question.builder()
-                .id(questionDTO.getId())
-                .title(questionDTO.getTitle())
-                .imageId(questionDTO.getImageId())
-                .questionOptions(mapperService.mapList(questionDTO.getQuestionOptions(), QuestionOption.class))
-                .build();
-    }
-
-    public QuestionDTO toQuestionDTO(Question question) {
-        return QuestionDTO.builder()
-                .id(question.getId())
-                .quizId(question.getQuizId())
-                .imageId(question.getImageId())
-                .title(question.getTitle())
-                .questionOptions(mapperService.mapList(question.getQuestionOptions(), QuestionOptionDTO.class))
-                .build();
     }
 }

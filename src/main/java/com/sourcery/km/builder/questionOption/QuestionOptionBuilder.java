@@ -21,9 +21,6 @@ import java.util.List;
 public class QuestionOptionBuilder {
 
     @Autowired
-    MapperService mapperService;
-
-    @Autowired
     ModelMapper modelMapper;
 
     @PostConstruct

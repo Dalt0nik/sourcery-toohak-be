@@ -33,6 +33,7 @@ import java.util.UUID;
 public class FileService {
     private final FileRepository fileRepository;
     private final UserService userService;
+    private final MapperService mapperService;
 
     private final BlobContainerClient blobContainerClient;
 
@@ -63,7 +64,7 @@ public class FileService {
 
         fileRepository.insertNewFile(file);
 
-        return FileBuilder.toFileDTO(file);
+        return mapperService.map(file, FileDTO.class);
     }
 
     public InputStreamResource retrieve(String fileId) {
