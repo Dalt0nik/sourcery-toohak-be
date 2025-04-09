@@ -62,7 +62,7 @@ public class QuestionService {
         questionRepository.updateExistingQuestion(question);
     }
 
-    public List<QuestionDTO> getQuestionsByQuizId (UUID quizId){
+    public List<QuestionDTO> getQuestionsByQuizId (UUID quizId) {
         List<Question> questions = questionRepository.getQuestionsByQuizId(quizId);
         return mapperService.mapList(questions, QuestionDTO.class);
     }

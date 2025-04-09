@@ -10,5 +10,6 @@ import java.util.UUID;
 @Builder
 public class FileDTO {
     UUID imageId;
+
     String fileType;
 }
