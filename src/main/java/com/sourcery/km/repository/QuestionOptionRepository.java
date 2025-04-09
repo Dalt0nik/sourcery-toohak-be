@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,4 +33,13 @@ public interface QuestionOptionRepository {
         )
         """)
     void deleteQuestionOptionsByQuizId(@Param("quizId") UUID quizId);
+
+    @Update("""
+        UPDATE question_options
+        SET title = #{questionOption.title},
+            ordering = #{questionOption.ordering},
+            is_correct = #{questionOption.isCorrect}
+        WHERE id = #{questionOption.id}
+        """)
+    void updateQuestionOption(@Param("questionOption") QuestionOption questionOption);
 }

@@ -1,12 +1,23 @@
 package com.sourcery.km.repository;
 
-import com.sourcery.km.entity.Question;
-import com.sourcery.km.entity.QuestionOption;
-import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.UUID;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+import org.springframework.stereotype.Repository;
+
+import com.sourcery.km.entity.Question;
+import com.sourcery.km.entity.QuestionOption;
+
+import jakarta.validation.Valid;
 
 @Mapper
 @Repository
@@ -41,4 +52,11 @@ public interface QuestionRepository {
 
     @Delete("DELETE FROM questions WHERE quiz_id = #{quizId}")
     void deleteQuestionsByQuizId(UUID quizId);
+
+    @Update("""
+        UPDATE questions
+        SET title = #{question.title}
+        WHERE id = #{question.id}
+        """)
+    void updateExistingQuestion(@Valid @Param("question") Question question);
 }

@@ -14,9 +14,15 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/quizzes/{quizId}/questions")
-public class QuestionContoller {
-
+public class QuestionController {
     private final QuestionService questionService;
+
+    @PutMapping("/{id}")
+    void updateQuestion(@PathVariable(value = "quizId") UUID quizId,
+                        @PathVariable(value = "id") UUID id,
+                        @Valid @RequestBody(required = true) QuestionDTO questionDTO) {
+        questionService.updateExistingQuestion(quizId, id, questionDTO);
+    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
