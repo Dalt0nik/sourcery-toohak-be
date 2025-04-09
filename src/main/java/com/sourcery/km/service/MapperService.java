@@ -1,15 +1,19 @@
 package com.sourcery.km.service;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class MapperService {
-    private final ModelMapper modelMapper;
+    @Autowired
+    ModelMapper modelMapper;
 
     public <T, K> List<K> mapList(List<T> list, Class<K> targetClass) {
         return list.stream().map(item -> modelMapper.map(item, targetClass)).toList();

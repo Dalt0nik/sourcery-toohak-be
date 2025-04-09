@@ -1,11 +1,12 @@
 package com.sourcery.km.dto;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.util.UUID;
 
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserInfoDTO {
     String sub;
