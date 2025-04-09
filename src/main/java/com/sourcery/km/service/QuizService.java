@@ -40,9 +40,11 @@ public class QuizService {
 
     private final UserService userService;
 
+    private final QuizBuilder quizBuilder;
+
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
-        Quiz quiz = QuizBuilder.toQuizEntity(quizDTO);
+        Quiz quiz = quizBuilder.toQuizEntity(quizDTO);
         quiz.setCreatedBy(userService.getUserInfo().getId());
         if (quizDTO.getImageId() != null) {
             File file = FileBuilder.fromFileIdSetTemporary(quizDTO.getImageId(), false);
@@ -53,7 +55,7 @@ public class QuizService {
         questionHelper.insertQuestions(quiz);
         questionOptionHelper.insertQuestionOptions(quiz);
 
-        return QuizBuilder.toQuizDTO(quiz);
+        return quizBuilder.toQuizDTO(quiz);
     }
 
     public List<QuizCardDTO> getQuizCards() {
@@ -62,7 +64,7 @@ public class QuizService {
 
     public QuizDTO getQuizById(UUID id) {
         Quiz quiz = getQuiz(id);
-        return QuizBuilder.toQuizDTO(quiz);
+        return quizBuilder.toQuizDTO(quiz);
     }
 
     public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {
@@ -72,7 +74,7 @@ public class QuizService {
         quiz.setTitle(quizRequestDto.getTitle());
         quiz.setDescription(quizRequestDto.getDescription());
         quizRepository.update(quiz);
-        return QuizBuilder.toQuizDTO(quiz);
+        return quizBuilder.toQuizDTO(quiz);
     }
 
     @Transactional

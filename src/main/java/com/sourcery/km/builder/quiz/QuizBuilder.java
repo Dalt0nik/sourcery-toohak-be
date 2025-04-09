@@ -1,25 +1,33 @@
 package com.sourcery.km.builder.quiz;
 
-import com.sourcery.km.builder.question.QuestionBuilder;
+import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
+import com.sourcery.km.entity.Question;
 import com.sourcery.km.entity.Quiz;
+import com.sourcery.km.service.MapperService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class QuizBuilder {
 
-    public static Quiz toQuizEntity(CreateQuizDTO quizDTO) {
+    @Autowired
+    private final MapperService mapperService;
+
+    public Quiz toQuizEntity(CreateQuizDTO quizDTO) {
         return Quiz.builder()
                 .title(quizDTO.getTitle())
                 .description(quizDTO.getDescription())
                 .coverImageId(quizDTO.getImageId())
-                .questions(QuestionBuilder.toQuestionEntities(quizDTO.getQuestions()))
+                .questions(mapperService.mapList(quizDTO.getQuestions(), Question.class))
                 .build();
     }
 
-    public static QuizDTO toQuizDTO(Quiz quiz) {
+    public QuizDTO toQuizDTO(Quiz quiz) {
         return QuizDTO.builder()
                 .id(quiz.getId())
                 .createdBy(quiz.getCreatedBy())
@@ -28,7 +36,7 @@ public class QuizBuilder {
                 .description(quiz.getDescription())
                 .createdAt(quiz.getCreatedAt())
                 .updatedAt(quiz.getUpdatedAt())
-                .questions(QuestionBuilder.toQuestionDTOS(quiz.getQuestions()))
+                .questions(mapperService.mapList(quiz.getQuestions(), QuestionDTO.class))
                 .build();
     }
 

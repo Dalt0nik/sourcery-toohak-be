@@ -5,12 +5,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 
 import java.util.List;
 import java.util.UUID;
 
-@Value
+@Data
 @Builder
 public class CreateQuestionDTO {
 

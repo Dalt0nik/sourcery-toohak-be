@@ -1,10 +1,12 @@
 package com.sourcery.km.dto.questionOption;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
+
 import java.util.UUID;
 
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class QuestionOptionDTO {
     UUID id;

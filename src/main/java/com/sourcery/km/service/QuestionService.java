@@ -32,12 +32,14 @@ public class QuestionService {
 
     private final QuestionOptionHelper questionOptionHelper;
 
+    private final MapperService mapperService;
+
     @Transactional
     public void insertQuestion(CreateQuestionDTO questionDTO, UUID quizId) {
         Quiz quiz = quizService.getQuiz(quizId);
         quizService.isQuizCreator(quiz);
 
-        Question question = QuestionBuilder.toQuestionEntity(questionDTO);
+        Question question = mapperService.map(questionDTO, Question.class);
         quiz.setQuestions(List.of(question));
         questionRepository.insertQuestion(question);
         questionOptionHelper.insertQuestionOptions(quiz);
@@ -49,7 +51,7 @@ public class QuestionService {
         Quiz quiz = quizService.getQuiz(quizId);
         quizService.isQuizCreator(quiz);
 
-        Question question = QuestionBuilder.toQuestionEntity(questionDto);
+        Question question = mapperService.map(questionDto, Question.class);
         question.setId(questionId);
 
         List<QuestionOption> questionOptions = question.getQuestionOptions();
