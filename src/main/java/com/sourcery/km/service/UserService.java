@@ -1,7 +1,5 @@
 package com.sourcery.km.service;
 
-import java.util.Optional;
-
 import com.sourcery.km.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.sourcery.km.builder.user.UserBuilder;
 import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.entity.User;
 import com.sourcery.km.exception.UnauthorizedException;

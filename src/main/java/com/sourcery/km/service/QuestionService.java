@@ -1,14 +1,10 @@
 package com.sourcery.km.service;
 
-import com.sourcery.km.builder.question.QuestionBuilder;
 import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.dto.question.CreateQuestionDTO;
-import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.entity.Question;
 import com.sourcery.km.entity.QuestionOption;
 import com.sourcery.km.entity.Quiz;
-import com.sourcery.km.exception.InvalidPayload;
-import com.sourcery.km.exception.UnauthorizedException;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.service.helper.QuestionOptionHelper;

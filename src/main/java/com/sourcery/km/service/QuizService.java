@@ -1,8 +1,6 @@
 package com.sourcery.km.service;
 
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import com.sourcery.km.builder.file.FileBuilder;
-import com.sourcery.km.builder.quiz.QuizBuilder;
 import com.sourcery.km.dto.quiz.CreateQuizDTO;
 import com.sourcery.km.dto.quiz.QuizCardDTO;
 import com.sourcery.km.dto.quiz.QuizDTO;
@@ -12,14 +10,11 @@ import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.exception.EntityNotFoundException;
 import com.sourcery.km.exception.UnauthorizedException;
 import com.sourcery.km.repository.FileRepository;
-import com.sourcery.km.repository.QuestionOptionRepository;
-import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import com.sourcery.km.service.helper.QuestionHelper;
 import com.sourcery.km.service.helper.QuestionOptionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,8 +35,6 @@ public class QuizService {
     private final FileRepository fileRepository;
 
     private final UserService userService;
-
-    private final QuizBuilder quizBuilder;
 
     private final MapperService mapperService;
 

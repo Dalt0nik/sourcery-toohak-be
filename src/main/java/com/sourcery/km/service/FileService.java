@@ -32,7 +32,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileService {
     private final FileRepository fileRepository;
+
     private final UserService userService;
+
     private final MapperService mapperService;
 
     private final BlobContainerClient blobContainerClient;
