@@ -1,14 +1,10 @@
 package com.sourcery.km.service;
 
-import com.sourcery.km.builder.question.QuestionBuilder;
 import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.dto.question.CreateQuestionDTO;
-import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.entity.Question;
 import com.sourcery.km.entity.QuestionOption;
 import com.sourcery.km.entity.Quiz;
-import com.sourcery.km.exception.InvalidPayload;
-import com.sourcery.km.exception.UnauthorizedException;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.service.helper.QuestionOptionHelper;
@@ -32,12 +28,14 @@ public class QuestionService {
 
     private final QuestionOptionHelper questionOptionHelper;
 
+    private final MapperService mapperService;
+
     @Transactional
     public void insertQuestion(CreateQuestionDTO questionDTO, UUID quizId) {
         Quiz quiz = quizService.getQuiz(quizId);
         quizService.isQuizCreator(quiz);
 
-        Question question = QuestionBuilder.toQuestionEntity(questionDTO);
+        Question question = mapperService.map(questionDTO, Question.class);
         quiz.setQuestions(List.of(question));
         questionRepository.insertQuestion(question);
         questionOptionHelper.insertQuestionOptions(quiz);
@@ -49,7 +47,7 @@ public class QuestionService {
         Quiz quiz = quizService.getQuiz(quizId);
         quizService.isQuizCreator(quiz);
 
-        Question question = QuestionBuilder.toQuestionEntity(questionDto);
+        Question question = mapperService.map(questionDto, Question.class);
         question.setId(questionId);
 
         List<QuestionOption> questionOptions = question.getQuestionOptions();
@@ -60,8 +58,8 @@ public class QuestionService {
         questionRepository.updateExistingQuestion(question);
     }
 
-    public List<QuestionDTO> getQuestionsByQuizId (UUID quizId){
+    public List<QuestionDTO> getQuestionsByQuizId (UUID quizId) {
         List<Question> questions = questionRepository.getQuestionsByQuizId(quizId);
-        return QuestionBuilder.toQuestionDTOS(questions);
+        return mapperService.mapList(questions, QuestionDTO.class);
     }
 }

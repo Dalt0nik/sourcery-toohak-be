@@ -1,7 +1,5 @@
 package com.sourcery.km.service;
 
-import java.util.Optional;
-
 import com.sourcery.km.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.sourcery.km.builder.user.UserBuilder;
 import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.entity.User;
 import com.sourcery.km.exception.UnauthorizedException;
@@ -38,6 +35,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final MapperService mapperService;
+
     public UserInfoDTO getUserInfoFromAuth(Jwt token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token.getTokenValue());
@@ -55,7 +54,7 @@ public class UserService {
         String sub = token.getClaim("sub").toString();
         User user = userRepository.getUserWithAuth0ID(sub)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return UserBuilder.toUserInfoDTO(user);
+        return mapperService.map(user, UserInfoDTO.class);
     }
 
     @Transactional
@@ -72,7 +71,7 @@ public class UserService {
         }
 
         UserInfoDTO userInfoDTO = getUserInfoFromAuth(token);
-        User newUser = UserBuilder.toUserEntity(userInfoDTO);
+        User newUser = mapperService.map(userInfoDTO, User.class);
         userRepository.insertUser(newUser);
         return true; // successfully registered now
     }

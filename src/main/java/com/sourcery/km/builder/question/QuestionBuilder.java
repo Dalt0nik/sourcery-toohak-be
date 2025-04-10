@@ -3,58 +3,39 @@ package com.sourcery.km.builder.question;
 import com.sourcery.km.builder.questionOption.QuestionOptionBuilder;
 import com.sourcery.km.dto.question.CreateQuestionDTO;
 import com.sourcery.km.dto.question.QuestionDTO;
+import com.sourcery.km.dto.questionOption.QuestionOptionDTO;
 import com.sourcery.km.entity.Question;
+import com.sourcery.km.entity.QuestionOption;
+import com.sourcery.km.service.MapperService;
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class QuestionBuilder {
 
-    public static Question toQuestionEntity(CreateQuestionDTO questionDTO) {
-        return Question.builder()
-                .title(questionDTO.getTitle())
-                .quizId(questionDTO.getQuizId())
-                .imageId(questionDTO.getImageId())
-                .questionOptions(QuestionOptionBuilder.toQuestionOptionEntitiesFromCreationQuestionOptionDTO(questionDTO.getQuestionOptions()))
-                .build();
+    @Autowired
+    ModelMapper modelMapper;
+
+    @PostConstruct
+    private void postConstruct() {
+        configureMappings();
     }
 
-    public static Question toQuestionEntity(QuestionDTO questionDTO) {
-        return Question.builder()
-                .id(questionDTO.getId())
-                .title(questionDTO.getTitle())
-                .imageId(questionDTO.getImageId())
-                .questionOptions(QuestionOptionBuilder.toQuestionOptionEntities(questionDTO.getQuestionOptions()))
-                .build();
-    }
-
-    public static QuestionDTO toQuestionDTO(Question question) {
-        return QuestionDTO.builder()
-                .id(question.getId())
-                .quizId(question.getQuizId())
-                .imageId(question.getImageId())
-                .title(question.getTitle())
-                .questionOptions(QuestionOptionBuilder.toQuestionOptionDTOS(question.getQuestionOptions()))
-                .build();
-    }
-
-    public static List<QuestionDTO> toQuestionDTOS(List<Question> questions) {
-        if (questions == null) {
-            return null;
-        }
-        return questions.stream()
-                .map(QuestionBuilder::toQuestionDTO)
-                .toList();
-    }
-
-    public static List<Question> toQuestionEntities(List<CreateQuestionDTO> questions) {
-        if (questions == null) {
-            return null;
-        }
-        return questions.stream()
-                .map(QuestionBuilder::toQuestionEntity)
-                .toList();
+    private void configureMappings() {
+        PropertyMap<CreateQuestionDTO, Question> createQuestionMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+            }
+        };
+        modelMapper.addMappings(createQuestionMap);
     }
 }

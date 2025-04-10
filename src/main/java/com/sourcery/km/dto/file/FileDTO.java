@@ -1,13 +1,15 @@
 package com.sourcery.km.dto.file;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.util.UUID;
 
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class FileDTO {
     UUID imageId;
+
     String fileType;
 }

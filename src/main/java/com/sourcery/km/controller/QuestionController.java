@@ -32,7 +32,7 @@ public class QuestionController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping List<QuestionDTO> getQuestionsByQuizId (@PathVariable(value = "quizId") UUID quizId){
+    @GetMapping List<QuestionDTO> getQuestionsByQuizId (@PathVariable(value = "quizId") UUID quizId) {
         return questionService.getQuestionsByQuizId(quizId);
     }
 
