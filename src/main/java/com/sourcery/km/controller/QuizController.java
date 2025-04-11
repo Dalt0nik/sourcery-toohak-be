@@ -1,9 +1,6 @@
 package com.sourcery.km.controller;
 
-import com.sourcery.km.dto.quiz.CreateQuizDTO;
-import com.sourcery.km.dto.quiz.QuizCardDTO;
-import com.sourcery.km.dto.quiz.QuizDTO;
-import com.sourcery.km.dto.quiz.QuizRequestDto;
+import com.sourcery.km.dto.quiz.*;
 import com.sourcery.km.service.QuizService;
 import com.sourcery.km.service.UserService;
 import jakarta.validation.Valid;
@@ -52,4 +49,10 @@ public class QuizController {
     public void deleteQuiz (@PathVariable(value = "id") UUID id) {
         quizService.deleteQuiz(id);
     }
+
+//    @ResponseStatus(HttpStatus.OK)
+//    @GetMapping("/{id}")
+//    public List<QuizFlatRow> getQuiz2(@PathVariable(value = "id") UUID id) {
+//        return quizService.getQuiz2(id);
+//    }
 }

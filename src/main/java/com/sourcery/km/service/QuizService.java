@@ -3,10 +3,7 @@ package com.sourcery.km.service;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import com.sourcery.km.builder.file.FileBuilder;
 import com.sourcery.km.builder.quiz.QuizBuilder;
-import com.sourcery.km.dto.quiz.CreateQuizDTO;
-import com.sourcery.km.dto.quiz.QuizCardDTO;
-import com.sourcery.km.dto.quiz.QuizDTO;
-import com.sourcery.km.dto.quiz.QuizRequestDto;
+import com.sourcery.km.dto.quiz.*;
 import com.sourcery.km.entity.File;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.exception.EntityNotFoundException;
@@ -95,5 +92,9 @@ public class QuizService {
         if (!userId.equals(quiz.getCreatedBy())) {
             throw new UnauthorizedException("User is not quiz creator");
         }
+    }
+
+    public List<QuizFlatRow> getQuiz2(UUID id) {
+        return quizRepository.findQuizById(id);
     }
 }
