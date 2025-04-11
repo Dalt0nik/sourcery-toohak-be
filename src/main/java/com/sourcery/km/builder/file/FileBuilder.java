@@ -2,18 +2,47 @@ package com.sourcery.km.builder.file;
 
 import com.sourcery.km.dto.file.FileDTO;
 import com.sourcery.km.entity.File;
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileBuilder {
-    public static FileDTO toFileDTO(File file) {
-        return FileDTO.builder()
-                .imageId(file.getId())
-                .fileType(file.getFileType())
-                .build();
+
+    @Autowired
+    ModelMapper modelMapper;
+
+    @PostConstruct
+    private void postConstruct() {
+        configureFileDTOMappings();
+        configureFileMappings();
+    }
+
+    private void configureFileDTOMappings() {
+        PropertyMap<FileDTO, File> createQuestionMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setId(source.getImageId());
+            }
+        };
+        modelMapper.addMappings(createQuestionMap);
+    }
+
+    private void configureFileMappings() {
+        PropertyMap<File, FileDTO> createQuestionMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setImageId(source.getId());
+            }
+        };
+        modelMapper.addMappings(createQuestionMap);
     }
 
     public static File fromFileIdSetTemporary(UUID fileId, boolean isTemporary) {

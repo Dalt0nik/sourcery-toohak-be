@@ -4,13 +4,14 @@ import com.sourcery.km.dto.questionOption.CreateQuestionOptionDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class CreateQuestionDTO {
 

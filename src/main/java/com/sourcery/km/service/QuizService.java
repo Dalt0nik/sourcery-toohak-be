@@ -1,6 +1,5 @@
 package com.sourcery.km.service;
 
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import com.sourcery.km.builder.file.FileBuilder;
 import com.sourcery.km.builder.quiz.QuizBuilder;
 import com.sourcery.km.dto.quiz.*;
@@ -9,8 +8,6 @@ import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.exception.EntityNotFoundException;
 import com.sourcery.km.exception.UnauthorizedException;
 import com.sourcery.km.repository.FileRepository;
-import com.sourcery.km.repository.QuestionOptionRepository;
-import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.repository.QuizRepository;
 import com.sourcery.km.service.helper.QuestionHelper;
 import com.sourcery.km.service.helper.QuestionOptionHelper;
@@ -37,9 +34,11 @@ public class QuizService {
 
     private final UserService userService;
 
+    private final MapperService mapperService;
+
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
-        Quiz quiz = QuizBuilder.toQuizEntity(quizDTO);
+        Quiz quiz = mapperService.map(quizDTO, Quiz.class);
         quiz.setCreatedBy(userService.getUserInfo().getId());
         if (quizDTO.getImageId() != null) {
             File file = FileBuilder.fromFileIdSetTemporary(quizDTO.getImageId(), false);
@@ -50,7 +49,7 @@ public class QuizService {
         questionHelper.insertQuestions(quiz);
         questionOptionHelper.insertQuestionOptions(quiz);
 
-        return QuizBuilder.toQuizDTO(quiz);
+        return mapperService.map(quiz, QuizDTO.class);
     }
 
     public List<QuizCardDTO> getQuizCards() {
@@ -59,7 +58,7 @@ public class QuizService {
 
     public QuizDTO getQuizById(UUID id) {
         Quiz quiz = getQuiz(id);
-        return QuizBuilder.toQuizDTO(quiz);
+        return mapperService.map(quiz, QuizDTO.class);
     }
 
     public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {
@@ -69,7 +68,7 @@ public class QuizService {
         quiz.setTitle(quizRequestDto.getTitle());
         quiz.setDescription(quizRequestDto.getDescription());
         quizRepository.update(quiz);
-        return QuizBuilder.toQuizDTO(quiz);
+        return mapperService.map(quiz, QuizDTO.class);
     }
 
     @Transactional
