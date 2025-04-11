@@ -19,9 +19,9 @@ public interface QuizRepository {
 
     @Select("SELECT * FROM quizzes WHERE id = #{id}")
     @Results(value = {
-            @Result(property = "id", column = "id"),
-            @Result(property = "questions", javaType = List.class,
-                    column = "id", many = @Many(select = "getQuestionsByQuizId"))})
+        @Result(property = "id", column = "id"),
+        @Result(property = "questions", javaType = List.class,
+                column = "id", many = @Many(select = "getQuestionsByQuizId"))})
     Optional<Quiz> findById(@Param("id") UUID id);
 
     //Shown like "no usages", but it's used in findById method.

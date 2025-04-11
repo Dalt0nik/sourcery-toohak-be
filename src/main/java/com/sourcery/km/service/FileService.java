@@ -3,7 +3,6 @@ package com.sourcery.km.service;
 import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
-import com.sourcery.km.builder.file.FileBuilder;
 import com.sourcery.km.dto.file.FileDTO;
 import com.sourcery.km.entity.File;
 import com.sourcery.km.exception.ResourceNotFoundException;
@@ -43,6 +42,8 @@ public class FileService {
      * Saves the file by checking mimetype to be jpeg or png, compresses the image and stores in blobStorage
      * This is a temporary file save which is not in the database
      * After using save you should use persist when storing in database
+     * @param fileDTO the file to be uploaded and stored temporarily
+     * @return a DTO representation of the saved file, containing details about the file
      */
     public FileDTO saveTemporary(MultipartFile fileDTO) throws IOException {
         UUID id = UUID.randomUUID();
