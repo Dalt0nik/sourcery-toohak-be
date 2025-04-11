@@ -41,8 +41,8 @@ public interface QuestionRepository {
 
     @Select("SELECT * FROM questions WHERE quiz_id = #{quizId}")
     @Results(value = {
-            @Result(property = "id", column = "id"),
-            @Result(property = "questionOptions", javaType = List.class,
+        @Result(property = "id", column = "id"),
+        @Result(property = "questionOptions", javaType = List.class,
             column = "id", many = @Many(select = "getQuestionOptionsByQuestionId"))})
     List<Question> getQuestionsByQuizId (UUID quizId);
 
