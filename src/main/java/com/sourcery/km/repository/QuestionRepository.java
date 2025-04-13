@@ -1,6 +1,7 @@
 package com.sourcery.km.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.ibatis.annotations.Delete;
@@ -14,10 +15,12 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
+
 import com.sourcery.km.entity.Question;
 import com.sourcery.km.entity.QuestionOption;
 
 import jakarta.validation.Valid;
+
 
 @Mapper
 @Repository
@@ -39,6 +42,9 @@ public interface QuestionRepository {
         """)
     void insertQuestion(Question question);
 
+    @Select("SELECT * FROM questions WHERE id = #{questionId}")
+    Optional<Question> getQuestion(UUID questionId);
+
     @Select("SELECT * FROM questions WHERE quiz_id = #{quizId}")
     @Results(value = {
         @Result(property = "id", column = "id"),
@@ -49,6 +55,10 @@ public interface QuestionRepository {
     //Shown like "no usages", but it's used in getQuestionsByQuizId method.
     @Select("SELECT * FROM question_options WHERE question_id = #{questionId}")
     List<QuestionOption> getQuestionOptionsByQuestionId (UUID questionId);
+
+    @Delete("DELETE FROM questions WHERE id = #{questionId}")
+    void deleteQuestion(UUID questionId);
+
 
     @Delete("DELETE FROM questions WHERE quiz_id = #{quizId}")
     void deleteQuestionsByQuizId(UUID quizId);

@@ -5,6 +5,7 @@ import com.sourcery.km.dto.question.CreateQuestionDTO;
 import com.sourcery.km.entity.Question;
 import com.sourcery.km.entity.QuestionOption;
 import com.sourcery.km.entity.Quiz;
+import com.sourcery.km.exception.EntityNotFoundException;
 import com.sourcery.km.repository.QuestionOptionRepository;
 import com.sourcery.km.repository.QuestionRepository;
 import com.sourcery.km.service.helper.QuestionOptionHelper;
@@ -57,6 +58,23 @@ public class QuestionService {
         }
         questionRepository.updateExistingQuestion(question);
     }
+
+    @Transactional
+    public void deleteQuestion(UUID questionId) {
+        Question question = getQuestion(questionId);
+        UUID quizId = question.getQuizId();
+        Quiz quiz = quizService.getQuiz(quizId);
+        quizService.isQuizCreator(quiz);
+
+        questionOptionHelper.deleteQuestionsOptionsByQuizId(quizId);
+        questionRepository.deleteQuestion(questionId);
+    };
+
+    public Question getQuestion(UUID questionId){
+
+        return questionRepository.getQuestion(questionId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Question with id: %s does not exist", questionId)));
+    };
 
     public List<QuestionDTO> getQuestionsByQuizId (UUID quizId) {
         List<Question> questions = questionRepository.getQuestionsByQuizId(quizId);

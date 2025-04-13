@@ -36,4 +36,12 @@ public class QuestionController {
         return questionService.getQuestionsByQuizId(quizId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{id}")
+    public void deleteQuestion (@PathVariable(value = "id") UUID id) {
+        questionService.deleteQuestion(id);
+    }
+
+
+
 }
