@@ -34,6 +34,12 @@ public interface QuestionOptionRepository {
         """)
     void deleteQuestionOptionsByQuizId(@Param("quizId") UUID quizId);
 
+    @Delete("""
+            DELETE FROM question_options
+            WHERE question_id = #{questionId}
+            """)
+    void deleteQuestionOptionsByQuestionId(@Param("questionId") UUID questionId);
+
     @Update("""
         UPDATE question_options
         SET title = #{questionOption.title},

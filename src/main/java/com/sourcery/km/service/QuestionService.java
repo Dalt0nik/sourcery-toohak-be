@@ -66,7 +66,7 @@ public class QuestionService {
         Quiz quiz = quizService.getQuiz(quizId);
         quizService.isQuizCreator(quiz);
 
-        questionOptionHelper.deleteQuestionsOptionsByQuizId(quizId);
+        questionOptionHelper.deleteQuestionsOptionsByQuestionId(questionId);
         questionRepository.deleteQuestion(questionId);
     };
 
