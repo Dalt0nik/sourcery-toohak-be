@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "9d7ed90c-3526-4aac-8f06-ea8841e89d68",
+		"_postman_id": "2091b824-bf0e-4fc8-a256-a54613888a8f",
 		"name": "Endpoints",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "43529678",
-		"_collection_link": "https://tomas-3502150.postman.co/workspace/BE-WS~d41e82a0-7f97-4bc5-bb73-5b2c184de085/collection/43529678-9d7ed90c-3526-4aac-8f06-ea8841e89d68?action=share&source=collection_link&creator=43529678"
+		"_exporter_id": "43529678"
 	},
 	"item": [
 		{
