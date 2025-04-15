@@ -33,6 +33,7 @@ public class UserBuilder {
             protected void configure() {
                 map().setAuth0Id(source.getSub());
                 map().setUsername(source.getName());
+                skip(destination.getId());
             }
         };
         modelMapper.addMappings(createQuestionMap);

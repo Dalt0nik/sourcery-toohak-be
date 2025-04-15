@@ -30,10 +30,23 @@ public class QuestionController {
                                @Valid @RequestBody CreateQuestionDTO questionDTO) {
         questionService.insertQuestion(questionDTO, quizId);
     }
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    QuestionDTO getQuestionById(@PathVariable(value = "id") UUID questionId) {
+        return questionService.getQuestionById(questionId);
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping List<QuestionDTO> getQuestionsByQuizId (@PathVariable(value = "quizId") UUID quizId) {
         return questionService.getQuestionsByQuizId(quizId);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{id}")
+    public void deleteQuestion (@PathVariable(value = "id") UUID id) {
+        questionService.deleteQuestion(id);
+    }
+
+
 
 }

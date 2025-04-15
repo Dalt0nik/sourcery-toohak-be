@@ -6,7 +6,7 @@ import com.sourcery.km.dto.quiz.*;
 import com.sourcery.km.entity.File;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.exception.EntityNotFoundException;
-import com.sourcery.km.exception.UnauthorizedException;
+import com.sourcery.km.exception.ForbiddenException;
 import com.sourcery.km.repository.FileRepository;
 import com.sourcery.km.repository.QuizRepository;
 import com.sourcery.km.service.helper.QuestionHelper;
@@ -89,7 +89,7 @@ public class QuizService {
     public void isQuizCreator(Quiz quiz) {
         UUID userId = userService.getUserInfo().getId();
         if (!userId.equals(quiz.getCreatedBy())) {
-            throw new UnauthorizedException("User is not quiz creator");
+            throw new ForbiddenException("User is not quiz creator");
         }
     }
 
