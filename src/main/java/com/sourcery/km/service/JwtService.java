@@ -1,10 +1,15 @@
 package com.sourcery.km.service;
 
-import com.sourcery.km.dto.SessionDTO;
+import com.sourcery.km.configuration.properties.JwtProperties;
+import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
+import com.sourcery.km.dto.quizSession.JoinSessionDTO;
+import com.sourcery.km.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -16,38 +21,52 @@ import java.util.function.Function;
 
 @Component
 public class JwtService {
-    public static final String SECRET = "5367566859703373367639792F423F452848284D6251655468576D5A71347437";
-    public static final int EXPIRES_IN_SECONDS = 3600;
-    public static final String TOKEN_TYPE = "Bearer";
+    private final JwtProperties jwtProperties;
 
-    public String generateAccessToken() {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims);
+    public JwtService(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
     }
 
-    public SessionDTO createNewSession() {
-        return SessionDTO.builder()
-                .tokenType(TOKEN_TYPE)
-                .expiresInSeconds(String.valueOf(EXPIRES_IN_SECONDS))
-                .accessToken(generateAccessToken())
+    public QuizPlayerDTO getAnonymousUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof String token)) {
+            throw new UnauthorizedException("User not authenticated");
+        }
+        Claims claims = extractAllClaims(token);
+
+        String quizSessionIdStr = claims.get("quizSessionId", String.class);
+        String nickname = claims.get("nickname", String.class);
+        UUID quizSessionId = UUID.fromString(quizSessionIdStr);
+        UUID id = UUID.fromString(claims.getSubject());
+
+        return QuizPlayerDTO.builder()
+                .userId(id)
+                .nickname(nickname)
+                .quizSessionId(quizSessionId)
                 .build();
     }
 
-    private String createToken(Map<String, Object> claims) {
-        return Jwts.builder().claims(claims)
-                .subject(UUID.randomUUID().toString())
-                .issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + EXPIRES_IN_SECONDS * 1000L))
-                .signWith(getSignKey())
-                .compact();
+    public JoinSessionDTO createNewSession(QuizPlayerDTO anonymousUser) {
+        return JoinSessionDTO.builder()
+                .tokenType(jwtProperties.tokenType)
+                .expiresInSeconds(String.valueOf(jwtProperties.expiresInSeconds))
+                .accessToken(generateAccessToken(anonymousUser))
+                .build();
     }
 
-    private SecretKey getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    public String extractUUID(String token) {
+    public String extractId(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    private String generateAccessToken(QuizPlayerDTO anonymousUser) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("quizSessionId", anonymousUser.getQuizSessionId());
+        claims.put("nickname", anonymousUser.getNickname());
+        return createToken(claims, anonymousUser.getUserId());
+    }
+
+    public Boolean validateToken(String token) {
+        return !isTokenExpired(token);
     }
 
     public Date extractExpiration(String token) {
@@ -65,11 +84,20 @@ public class JwtService {
                 .build().parseSignedClaims(token).getPayload();
     }
 
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    private String createToken(Map<String, Object> claims, UUID anonymousUserId) {
+        return Jwts.builder().claims(claims)
+                .subject(anonymousUserId.toString())
+                .issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + jwtProperties.expiresInSeconds * 1000L))
+                .signWith(getSignKey())
+                .compact();
     }
 
-    public Boolean validateToken(String token) {
-        return !isTokenExpired(token);
+    private SecretKey getSignKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecret());
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
     }
 }

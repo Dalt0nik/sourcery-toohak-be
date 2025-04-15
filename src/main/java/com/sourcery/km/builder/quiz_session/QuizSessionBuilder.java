@@ -3,7 +3,7 @@ package com.sourcery.km.builder.quiz_session;
 import com.sourcery.km.dto.quizSession.QuizSessionDTO;
 import com.sourcery.km.entity.QuizSession;
 import com.sourcery.km.entity.QuizStatus;
-import com.sourcery.km.util.CodeGenerator;
+import com.sourcery.km.repository.QuizSessionRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,6 +12,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Component
@@ -23,25 +24,41 @@ public class QuizSessionBuilder {
     @Autowired
     ModelMapper modelMapper;
 
-    public static QuizSession createQuizSession(UUID quizId) {
+    @Autowired
+    QuizSessionRepository quizSessionRepository;
+
+    public static QuizSession createQuizSession(UUID quizId, String joinId) {
         return QuizSession.builder()
                 .id(UUID.randomUUID())
                 .status(QuizStatus.ACTIVE)
-                .joinId(CodeGenerator.generateJoinCode(joinCodeLength))
+                .joinId(joinId)
                 .quizId(quizId)
+                .createdAt(Instant.now())
                 .build();
     }
 
     @PostConstruct
     private void postConstruct() {
-        configureMappings();
+        configureDtoToEntity();
+        configureEntityToDto();
     }
 
-    private void configureMappings() {
+    private void configureDtoToEntity() {
         PropertyMap<QuizSessionDTO, QuizSession> createMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 skip(destination.getId());
+            }
+        };
+        modelMapper.addMappings(createMap);
+    }
+
+
+    private void configureEntityToDto() {
+        PropertyMap<QuizSession, QuizSessionDTO> createMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setQuizSessionId(source.getId());
             }
         };
         modelMapper.addMappings(createMap);

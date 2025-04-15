@@ -12,13 +12,13 @@ public interface QuizSessionRepository {
 
     @Insert("""
             INSERT INTO quiz_sessions (id, status, join_id, created_at) VALUES
-            (#{id}, CAST(#{status} AS quiz_status), #{joinId}, NOW())
+            (#{id}, CAST(#{status} AS quiz_status), #{joinId}, #{createdAt})
             """)
     void insertNewSession(QuizSession session);
 
     @Select("""
             SELECT * FROM quiz_sessions
-            WHERE id = #{id}
+            WHERE join_id = #{join_id}
             """)
-    QuizSession getQuizSessionById(String id);
+    QuizSession findSessionByJoinId(String join_id);
 }

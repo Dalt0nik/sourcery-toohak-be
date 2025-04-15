@@ -1,5 +1,6 @@
-package com.sourcery.km.dto.quizPlayer;
+package com.sourcery.km.dto.quizSession;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuizPlayerDTO {
-    UUID userId;
-
+public class StartSessionDTO {
+    @NotBlank(message = "quizSessionId cannot be blank")
     UUID quizSessionId;
-
-    String nickname;
 }

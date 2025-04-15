@@ -3,10 +3,15 @@ package com.sourcery.km.configuration;
 import com.sourcery.km.configuration.filter.CustomAccessDeniedHandler;
 import com.sourcery.km.configuration.filter.JwtAuthFilter;
 import com.sourcery.km.configuration.filter.JwtAuthenticationEntryPoint;
+import com.sourcery.km.configuration.properties.AzureProperties;
+import com.sourcery.km.configuration.properties.JwtProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -21,6 +26,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
  * Base Spring security configuration for API restriction
  */
 @Configuration
+@EnableConfigurationProperties({JwtProperties.class, AzureProperties.class})
 public class SecurityConfig {
 
     /**
@@ -34,10 +40,9 @@ public class SecurityConfig {
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
             CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
         return http
-                .securityMatcher("/jwt", "/lobbies/**")
+                .securityMatcher("/ws/**")
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/jwt").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -59,7 +64,7 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/ws/**", "/jwt").permitAll()
+                        .requestMatchers("/sessions/find/**", "/sessions/join").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
@@ -67,6 +72,7 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(withDefaults())
                 )
+                .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
 
@@ -84,5 +90,13 @@ public class SecurityConfig {
         return source;
     }
 
-
+    /**
+     * This makes sure that JwtAuthFilter is not applied everywhere
+     */
+    @Bean
+    public FilterRegistrationBean<JwtAuthFilter> registerFilter(JwtAuthFilter jwtAuthFilter) {
+        FilterRegistrationBean<JwtAuthFilter> filterRegistrationBean = new FilterRegistrationBean<>(jwtAuthFilter);
+        filterRegistrationBean.setEnabled(false);
+        return filterRegistrationBean;
+    }
 }

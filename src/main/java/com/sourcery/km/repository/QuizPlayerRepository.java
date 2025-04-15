@@ -12,7 +12,7 @@ public interface QuizPlayerRepository {
 
     @Insert("""
             INSERT INTO quiz_players (id, quiz_session_id, nickname, score, joined_at) VALUES
-            (#{id}, #{quizSessionId}, ${nickname}, #{score}, NOW())
+            (#{id}, #{quizSessionId}, #{nickname}, #{score}, #{joinedAt})
             """)
     void insertNewPlayer(QuizPlayer player);
 

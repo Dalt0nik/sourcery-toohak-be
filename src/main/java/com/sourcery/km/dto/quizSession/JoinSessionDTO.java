@@ -1,4 +1,4 @@
-package com.sourcery.km.dto;
+package com.sourcery.km.dto.quizSession;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SessionDTO {
+public class JoinSessionDTO {
     String accessToken;
 
     String expiresInSeconds;

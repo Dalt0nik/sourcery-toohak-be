@@ -19,5 +19,5 @@ public class QuizSessionDTO {
 
     Instant createdAt;
 
-    UUID quizId;
+    UUID quizSessionId;
 }

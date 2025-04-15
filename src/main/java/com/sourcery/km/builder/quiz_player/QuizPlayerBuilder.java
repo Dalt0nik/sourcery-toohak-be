@@ -19,14 +19,25 @@ public class QuizPlayerBuilder {
 
     @PostConstruct
     private void postConstruct() {
-        configureMappings();
+        configureDtoToEntity();
+        configureEntityToDto();
     }
 
-    private void configureMappings() {
+    private void configureDtoToEntity() {
         PropertyMap<QuizPlayerDTO, QuizPlayer> createMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 skip(destination.getId());
+            }
+        };
+        modelMapper.addMappings(createMap);
+    }
+
+    private void configureEntityToDto() {
+        PropertyMap<QuizPlayer, QuizPlayerDTO> createMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+
             }
         };
         modelMapper.addMappings(createMap);
