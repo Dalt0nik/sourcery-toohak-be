@@ -1,5 +1,6 @@
 package com.sourcery.km.service;
 
+import com.sourcery.km.builder.quiz_player.QuizPlayerBuilder;
 import com.sourcery.km.builder.quiz_session.QuizSessionBuilder;
 import com.sourcery.km.dto.AnswerDTO;
 import com.sourcery.km.dto.NewQuestionDTO;
@@ -20,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Slf4j
@@ -64,12 +64,7 @@ public class QuizSessionService {
     }
 
     public QuizPlayerDTO joinSession(JoinSessionRequestDTO joinSessionRequestDTO) {
-        QuizPlayer quizPlayer = QuizPlayer.builder()
-                .quizSessionId(joinSessionRequestDTO.getQuizSessionId())
-                .nickname(joinSessionRequestDTO.getNickname())
-                .score(0)
-                .joinedAt(Instant.now())
-                .build();
+        QuizPlayer quizPlayer = QuizPlayerBuilder.createQuizPlayer(joinSessionRequestDTO);
         quizPlayerRepository.insertNewPlayer(quizPlayer);
         return mapperService.map(quizPlayer, QuizPlayerDTO.class);
     }

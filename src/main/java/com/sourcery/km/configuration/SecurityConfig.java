@@ -40,9 +40,10 @@ public class SecurityConfig {
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
             CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
         return http
-                .securityMatcher("/ws/**")
+                .securityMatcher("/ws/**", "/sessions/find/**", "/sessions/join")
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/sessions/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -52,6 +53,8 @@ public class SecurityConfig {
                             exceptionHandling.accessDeniedHandler(customAccessDeniedHandler);
                         }
                 )
+                // CSRF does not allow anonymous posts methods which we use for /sessions/join
+                .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
 
@@ -64,7 +67,6 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/sessions/find/**", "/sessions/join").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
@@ -72,7 +74,6 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(withDefaults())
                 )
-                .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
 
