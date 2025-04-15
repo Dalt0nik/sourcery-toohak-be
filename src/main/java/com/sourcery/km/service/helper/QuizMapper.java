@@ -30,6 +30,8 @@ public class QuizMapper {
         quizDto.setDescription(row.getQuizDescription());
         quizDto.setImageId(row.getQuizImageId());
         quizDto.setCreatedBy(row.getQuizCreatedBy());
+        quizDto.setCreatedAt(row.getQuizCreatedAt());
+        quizDto.setUpdatedAt(row.getQuizUpdatedAt());
         quizDto.setQuestions(new ArrayList<>());
         return quizDto;
     }
