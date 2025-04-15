@@ -3,7 +3,6 @@ package com.sourcery.km.builder.quiz_session;
 import com.sourcery.km.dto.quizSession.QuizSessionDTO;
 import com.sourcery.km.entity.QuizSession;
 import com.sourcery.km.entity.QuizStatus;
-import com.sourcery.km.repository.QuizSessionRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -18,14 +17,8 @@ import java.util.UUID;
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class QuizSessionBuilder {
-
-    private static final int joinCodeLength = 5;
-
     @Autowired
     ModelMapper modelMapper;
-
-    @Autowired
-    QuizSessionRepository quizSessionRepository;
 
     public static QuizSession createQuizSession(UUID quizId, String joinId) {
         return QuizSession.builder()
