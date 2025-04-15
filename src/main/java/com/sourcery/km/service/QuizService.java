@@ -11,6 +11,7 @@ import com.sourcery.km.repository.FileRepository;
 import com.sourcery.km.repository.QuizRepository;
 import com.sourcery.km.service.helper.QuestionHelper;
 import com.sourcery.km.service.helper.QuestionOptionHelper;
+import com.sourcery.km.service.helper.QuizMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,8 @@ public class QuizService {
 
     private final MapperService mapperService;
 
+    private final QuizMapper quizMapper;
+
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
         Quiz quiz = mapperService.map(quizDTO, Quiz.class);
@@ -57,8 +60,11 @@ public class QuizService {
     }
 
     public QuizDTO getQuizById(UUID id) {
-        Quiz quiz = getQuiz(id);
-        return mapperService.map(quiz, QuizDTO.class);
+        List<QuizFlatRow> flatRow = quizRepository.findQuizById(id);
+        if (flatRow.isEmpty()) {
+            throw new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id));
+        }
+        return quizMapper.toQuizDto(flatRow);
     }
 
     public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {
@@ -91,9 +97,5 @@ public class QuizService {
         if (!userId.equals(quiz.getCreatedBy())) {
             throw new ForbiddenException("User is not quiz creator");
         }
-    }
-
-    public List<QuizFlatRow> getQuiz2(UUID id) {
-        return quizRepository.findQuizById(id);
     }
 }

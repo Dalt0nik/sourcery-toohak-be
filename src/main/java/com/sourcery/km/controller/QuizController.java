@@ -40,19 +40,14 @@ public class QuizController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    public QuizDTO updateQuiz (@PathVariable(value = "id") UUID id,
-                               @Valid @RequestBody QuizRequestDto requestDto) {
+    public QuizDTO updateQuiz(@PathVariable(value = "id") UUID id,
+                              @Valid @RequestBody QuizRequestDto requestDto) {
         return quizService.updateQuiz(requestDto, id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteQuiz (@PathVariable(value = "id") UUID id) {
+    public void deleteQuiz(@PathVariable(value = "id") UUID id) {
         quizService.deleteQuiz(id);
     }
 
-//    @ResponseStatus(HttpStatus.OK)
-//    @GetMapping("/{id}")
-//    public List<QuizFlatRow> getQuiz2(@PathVariable(value = "id") UUID id) {
-//        return quizService.getQuiz2(id);
-//    }
 }
