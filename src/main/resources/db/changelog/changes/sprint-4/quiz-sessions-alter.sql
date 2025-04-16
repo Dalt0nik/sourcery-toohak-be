@@ -15,3 +15,12 @@ ALTER TABLE quiz_sessions
 
 -- changeset JSF2025S-86:006
 CREATE INDEX idx_quiz_sessions_join_id ON quiz_sessions (join_id);
+
+-- changeset JSF2025S-100:001
+ALTER TABLE quiz_sessions
+    ADD COLUMN created_by UUID;
+
+-- changeset JSF2025S-100:002
+ALTER TABLE quiz_sessions
+    ADD CONSTRAINT fk_created_by
+        FOREIGN KEY (created_by) REFERENCES app_users (id);

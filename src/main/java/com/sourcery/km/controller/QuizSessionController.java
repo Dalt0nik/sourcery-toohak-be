@@ -1,6 +1,5 @@
 package com.sourcery.km.controller;
 
-import com.sourcery.km.dto.NewQuestionDTO;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
 import com.sourcery.km.dto.quizSession.*;
 import com.sourcery.km.service.JwtService;
@@ -51,21 +50,5 @@ public class QuizSessionController {
     @PostMapping("/start")
     public void start(@RequestBody StartSessionDTO session) {
         quizSessionService.startSession(session);
-    }
-
-    /**
-     * TODO: implement logic for sending answers and receive answers
-     */
-    @PostMapping("/send")
-    public void sendQuestion(@RequestBody NewQuestionDTO question) {
-        quizSessionService.sendNewQuestion(question);
-    }
-
-    /**
-     * TODO: implement rejoin logic based on the spring jwt provided
-     */
-    @GetMapping("/rejoin")
-    public void rejoin() {
-
     }
 }

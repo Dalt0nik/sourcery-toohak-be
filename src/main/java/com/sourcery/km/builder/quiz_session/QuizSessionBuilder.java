@@ -20,12 +20,13 @@ public class QuizSessionBuilder {
     @Autowired
     ModelMapper modelMapper;
 
-    public static QuizSession createQuizSession(UUID quizId, String joinId) {
+    public static QuizSession createQuizSession(UUID quizId, UUID userId, String joinId) {
         return QuizSession.builder()
                 .id(UUID.randomUUID())
                 .status(QuizStatus.ACTIVE)
                 .joinId(joinId)
                 .quizId(quizId)
+                .createdBy(userId)
                 .createdAt(Instant.now())
                 .build();
     }

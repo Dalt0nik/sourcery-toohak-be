@@ -3,7 +3,7 @@ package com.sourcery.km.service;
 import com.sourcery.km.builder.quiz_player.QuizPlayerBuilder;
 import com.sourcery.km.builder.quiz_session.QuizSessionBuilder;
 import com.sourcery.km.dto.AnswerDTO;
-import com.sourcery.km.dto.NewQuestionDTO;
+import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
 import com.sourcery.km.dto.quizSession.CreateSessionDTO;
 import com.sourcery.km.dto.quizSession.JoinSessionRequestDTO;
@@ -31,16 +31,17 @@ public class QuizSessionService {
     private final QuizService quizService;
     private final QuizSessionRepository quizSessionRepository;
     private final MapperService mapperService;
-    private final JwtService jwtService;
     private final QuizPlayerRepository quizPlayerRepository;
+    private final UserService userService;
 
     public QuizSessionDTO createNewSession(CreateSessionDTO createSessionDTO) {
+        UserInfoDTO user = userService.getUserInfo();
         UUID quizId = createSessionDTO.getQuizId();
         Quiz quiz = quizService.getQuiz(quizId);
         if (quiz == null) {
             throw new BadRequestException("Quiz not found");
         }
-        QuizSession quizSession = QuizSessionBuilder.createQuizSession(quizId, createJoinId());
+        QuizSession quizSession = QuizSessionBuilder.createQuizSession(quizId, user.getId(), createJoinId());
         quizSessionRepository.insertNewSession(quizSession);
         return mapperService.map(quizSession, QuizSessionDTO.class);
     }
@@ -62,12 +63,6 @@ public class QuizSessionService {
         QuizPlayer quizPlayer = QuizPlayerBuilder.createQuizPlayer(joinSessionRequestDTO);
         quizPlayerRepository.insertNewPlayer(quizPlayer);
         return mapperService.map(quizPlayer, QuizPlayerDTO.class);
-    }
-
-    public void sendNewQuestion(NewQuestionDTO newQuestionDTO) {
-        var user = jwtService.getAnonymousUserInfo();
-        // This part is not implemented fully
-        messagingTemplate.convertAndSend("/topic/lobby/" + user.getQuizSessionId(), newQuestionDTO);
     }
 
     public void processPlayerAnswer(AnswerDTO answer) {
