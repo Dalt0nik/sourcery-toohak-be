@@ -89,8 +89,11 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"exec": [],
-								"type": "text/javascript"
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -101,18 +104,18 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/sessions/find/:id",
+							"raw": "{{base_url}}/sessions/find/:join-id",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"sessions",
 								"find",
-								":id"
+								":join-id"
 							],
 							"variable": [
 								{
-									"key": "id",
+									"key": "join-id",
 									"value": "{{join_id}}"
 								}
 							]
@@ -743,6 +746,38 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
