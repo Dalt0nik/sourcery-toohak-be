@@ -15,9 +15,9 @@ import com.sourcery.km.entity.QuizSession;
 import com.sourcery.km.exception.BadRequestException;
 import com.sourcery.km.repository.QuizPlayerRepository;
 import com.sourcery.km.repository.QuizSessionRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -25,20 +25,14 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class QuizSessionService {
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-    @Autowired
-    private QuizService quizService;
-    @Autowired
-    private QuizSessionRepository quizSessionRepository;
-    @Autowired
-    private MapperService mapperService;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private QuizPlayerRepository quizPlayerRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final QuizService quizService;
+    private final QuizSessionRepository quizSessionRepository;
+    private final MapperService mapperService;
+    private final JwtService jwtService;
+    private final QuizPlayerRepository quizPlayerRepository;
 
     public QuizSessionDTO createNewSession(CreateSessionDTO createSessionDTO) {
         UUID quizId = createSessionDTO.getQuizId();
@@ -52,6 +46,7 @@ public class QuizSessionService {
     }
 
     public void startSession(StartSessionDTO session) {
+        // This part is not implemented fully
         messagingTemplate.convertAndSend("/topic/lobby/" + session.getQuizSessionId(), "Game has started!");
     }
 
@@ -71,10 +66,12 @@ public class QuizSessionService {
 
     public void sendNewQuestion(NewQuestionDTO newQuestionDTO) {
         var user = jwtService.getAnonymousUserInfo();
+        // This part is not implemented fully
         messagingTemplate.convertAndSend("/topic/lobby/" + user.getQuizSessionId(), newQuestionDTO);
     }
 
     public void processPlayerAnswer(AnswerDTO answer) {
+        // This part is not implemented
         log.info("Lobby: {}, player: {}, answer: {}",
                 answer.getLobbyId(),
                 answer.getPlayerId(),

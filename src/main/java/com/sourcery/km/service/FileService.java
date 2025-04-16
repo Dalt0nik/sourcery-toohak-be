@@ -31,17 +31,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileService {
     private final FileRepository fileRepository;
-
     private final UserService userService;
-
     private final MapperService mapperService;
-
     private final BlobContainerClient blobContainerClient;
 
     /**
      * Saves the file by checking mimetype to be jpeg or png, compresses the image and stores in blobStorage
-     * This is a temporary file save which is not in the database
-     * After using save you should use persist when storing in database
+     *
      * @param fileDTO the file to be uploaded and stored temporarily
      * @return a DTO representation of the saved file, containing details about the file
      */
