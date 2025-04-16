@@ -1,10 +1,8 @@
 package com.sourcery.km.service;
 
 import com.sourcery.km.builder.file.FileBuilder;
-import com.sourcery.km.dto.quiz.CreateQuizDTO;
-import com.sourcery.km.dto.quiz.QuizCardDTO;
-import com.sourcery.km.dto.quiz.QuizDTO;
-import com.sourcery.km.dto.quiz.QuizRequestDto;
+import com.sourcery.km.builder.quiz.QuizBuilder;
+import com.sourcery.km.dto.quiz.*;
 import com.sourcery.km.entity.File;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.exception.EntityNotFoundException;
@@ -13,6 +11,7 @@ import com.sourcery.km.repository.FileRepository;
 import com.sourcery.km.repository.QuizRepository;
 import com.sourcery.km.service.helper.QuestionHelper;
 import com.sourcery.km.service.helper.QuestionOptionHelper;
+import com.sourcery.km.service.helper.QuizMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +30,8 @@ public class QuizService {
     private final FileRepository fileRepository;
     private final UserService userService;
     private final MapperService mapperService;
+
+    private final QuizMapper quizMapper;
 
     @Transactional
     public QuizDTO createQuiz(CreateQuizDTO quizDTO) {
@@ -53,8 +54,11 @@ public class QuizService {
     }
 
     public QuizDTO getQuizById(UUID id) {
-        Quiz quiz = getQuiz(id);
-        return mapperService.map(quiz, QuizDTO.class);
+        List<QuizFlatRow> flatRow = quizRepository.findQuizById(id);
+        if (flatRow.isEmpty()) {
+            throw new EntityNotFoundException(String.format("Quiz with id: %s does not exist", id));
+        }
+        return quizMapper.toQuizDto(flatRow);
     }
 
     public QuizDTO updateQuiz(QuizRequestDto quizRequestDto, UUID quizId) {

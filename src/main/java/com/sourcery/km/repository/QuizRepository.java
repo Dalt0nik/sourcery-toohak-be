@@ -1,6 +1,7 @@
 package com.sourcery.km.repository;
 
 import com.sourcery.km.dto.quiz.QuizCardDTO;
+import com.sourcery.km.dto.quiz.QuizFlatRow;
 import com.sourcery.km.entity.Question;
 import com.sourcery.km.entity.Quiz;
 import org.apache.ibatis.annotations.*;
@@ -17,11 +18,32 @@ public interface QuizRepository {
             " VALUES(#{id}, #{createdBy}, #{title}, #{description}, #{coverImageId})")
     void insertQuiz(Quiz quiz);
 
+    @Select("""
+            SELECT q.id AS quizId, q.title AS quizTitle,
+            q.description AS quizDescription,
+            q.created_by AS quizCreatedBy,
+            q.cover_image_id AS quizImageId,
+            q.created_at AS quizCreatedAt,
+            q.updated_at AS quizUpdatedAt,
+            qu.id AS questionId, qu.title AS questionTitle,
+            qu.image AS questionImage,
+            o.id AS optionId, o.title AS optionTitle,
+            o.ordering AS optionOrdering,
+            o.is_correct AS optionIsCorrect
+            FROM quizzes q
+            LEFT JOIN questions qu
+            ON qu.quiz_id = q.id
+            LEFT JOIN question_options o
+            ON o.question_id = qu.id
+            WHERE q.id = #{id}
+            """)
+    List<QuizFlatRow> findQuizById(UUID id);
+
     @Select("SELECT * FROM quizzes WHERE id = #{id}")
     @Results(value = {
-        @Result(property = "id", column = "id"),
-        @Result(property = "questions", javaType = List.class,
-                column = "id", many = @Many(select = "getQuestionsByQuizId"))})
+            @Result(property = "id", column = "id"),
+            @Result(property = "questions", javaType = List.class,
+                    column = "id", many = @Many(select = "getQuestionsByQuizId"))})
     Optional<Quiz> findById(@Param("id") UUID id);
 
     //Shown like "no usages", but it's used in findById method.
