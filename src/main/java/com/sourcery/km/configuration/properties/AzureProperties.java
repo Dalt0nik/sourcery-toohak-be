@@ -1,4 +1,4 @@
-package com.sourcery.km.configuration;
+package com.sourcery.km.configuration.properties;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @Validated
 @ConfigurationProperties(prefix = "sourcery.azure.storage.blob")
-public class AzureConfigurationProperties {
+public class AzureProperties {
     @NotBlank(message = "Blob Storage container name must be configured")
     private String containerName;
 

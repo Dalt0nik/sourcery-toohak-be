@@ -1,6 +1,12 @@
 package com.sourcery.km.service;
 
+import com.sourcery.km.dto.UserInfoDTO;
+import com.sourcery.km.entity.User;
 import com.sourcery.km.exception.EntityNotFoundException;
+import com.sourcery.km.exception.UnauthorizedException;
+import com.sourcery.km.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,29 +19,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.sourcery.km.dto.UserInfoDTO;
-import com.sourcery.km.entity.User;
-import com.sourcery.km.exception.UnauthorizedException;
-import com.sourcery.km.repository.UserRepository;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
+    final static String userInfoPath = "/userinfo";
+    private final RestTemplate restTemplate;
+    private final UserRepository userRepository;
+    private final MapperService mapperService;
     @Value("${okta.oauth2.issuer}")
     String auth0Domain;
-
-    final static String userInfoPath = "/userinfo";
-
-    private final RestTemplate restTemplate;
-
-    private final UserRepository userRepository;
-
-    private final MapperService mapperService;
 
     public UserInfoDTO getUserInfoFromAuth(Jwt token) {
         HttpHeaders headers = new HttpHeaders();

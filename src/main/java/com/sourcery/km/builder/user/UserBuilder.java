@@ -1,8 +1,6 @@
 package com.sourcery.km.builder.user;
 
 import com.sourcery.km.dto.UserInfoDTO;
-import com.sourcery.km.dto.questionOption.CreateQuestionOptionDTO;
-import com.sourcery.km.entity.QuestionOption;
 import com.sourcery.km.entity.User;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;

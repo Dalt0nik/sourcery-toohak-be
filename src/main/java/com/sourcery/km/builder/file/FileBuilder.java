@@ -19,6 +19,13 @@ public class FileBuilder {
     @Autowired
     ModelMapper modelMapper;
 
+    public static File fromFileIdSetTemporary(UUID fileId, boolean isTemporary) {
+        return File.builder()
+                .id(fileId)
+                .isTemporary(isTemporary)
+                .build();
+    }
+
     @PostConstruct
     private void postConstruct() {
         configureFileDTOMappings();
@@ -26,29 +33,22 @@ public class FileBuilder {
     }
 
     private void configureFileDTOMappings() {
-        PropertyMap<FileDTO, File> createQuestionMap = new PropertyMap<>() {
+        PropertyMap<FileDTO, File> createMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 map().setId(source.getImageId());
             }
         };
-        modelMapper.addMappings(createQuestionMap);
+        modelMapper.addMappings(createMap);
     }
 
     private void configureFileMappings() {
-        PropertyMap<File, FileDTO> createQuestionMap = new PropertyMap<>() {
+        PropertyMap<File, FileDTO> createMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 map().setImageId(source.getId());
             }
         };
-        modelMapper.addMappings(createQuestionMap);
-    }
-
-    public static File fromFileIdSetTemporary(UUID fileId, boolean isTemporary) {
-        return File.builder()
-                .id(fileId)
-                .isTemporary(isTemporary)
-                .build();
+        modelMapper.addMappings(createMap);
     }
 }
