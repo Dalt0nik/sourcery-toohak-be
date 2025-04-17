@@ -13,11 +13,11 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties(prefix = "sourcery.jwt")
 public class JwtProperties {
-    public final String tokenType = "Bearer";
+    public static final String TOKENTYPE = "Bearer";
 
     @NotNull(message = "expires-in-seconds must be configured")
     @Min(value = 1, message = "expires-in-seconds must be at least 1")
-    public int expiresInSeconds;
+    private int expiresInSeconds;
 
     @NotBlank(message = "JWT secret must be configured")
     private String secret;

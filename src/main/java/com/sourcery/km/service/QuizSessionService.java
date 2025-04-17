@@ -28,10 +28,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class QuizSessionService {
     private final SimpMessagingTemplate messagingTemplate;
+
     private final QuizService quizService;
+
     private final QuizSessionRepository quizSessionRepository;
+
     private final MapperService mapperService;
+
     private final JwtService jwtService;
+
     private final QuizPlayerRepository quizPlayerRepository;
 
     public QuizSessionDTO createNewSession(CreateSessionDTO createSessionDTO) {

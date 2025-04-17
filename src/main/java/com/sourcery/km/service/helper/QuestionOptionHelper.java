@@ -29,6 +29,7 @@ public class QuestionOptionHelper {
     public void deleteQuestionsOptionsByQuizId(UUID quizId) {
         questionOptionRepository.deleteQuestionOptionsByQuizId(quizId);
     }
+
     public void deleteQuestionsOptionsByQuestionId(UUID questionId) {
         questionOptionRepository.deleteQuestionOptionsByQuestionId(questionId);
     }

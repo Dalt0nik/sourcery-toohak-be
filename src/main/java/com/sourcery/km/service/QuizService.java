@@ -25,10 +25,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class QuizService {
     private final QuizRepository quizRepository;
+
     private final QuestionHelper questionHelper;
+
     private final QuestionOptionHelper questionOptionHelper;
+
     private final FileRepository fileRepository;
+
     private final UserService userService;
+
     private final MapperService mapperService;
 
     private final QuizMapper quizMapper;

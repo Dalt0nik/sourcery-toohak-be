@@ -22,9 +22,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class QuestionService {
     private final QuizService quizService;
+
     private final QuestionRepository questionRepository;
+
     private final QuestionOptionRepository questionOptionRepository;
+
     private final QuestionOptionHelper questionOptionHelper;
+
     private final MapperService mapperService;
 
     @Transactional
@@ -69,7 +73,8 @@ public class QuestionService {
     public Question getQuestion(UUID questionId) {
 
         return questionRepository.getQuestion(questionId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Question with id: %s does not exist", questionId)));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Question with id: %s does not exist", questionId)));
     }
 
     public QuestionDTO getQuestionById(UUID questionId) {
