@@ -25,9 +25,13 @@ import org.springframework.web.client.RestTemplate;
 public class UserService {
 
     final static String userInfoPath = "/userinfo";
+
     private final RestTemplate restTemplate;
+
     private final UserRepository userRepository;
+
     private final MapperService mapperService;
+
     @Value("${okta.oauth2.issuer}")
     String auth0Domain;
 

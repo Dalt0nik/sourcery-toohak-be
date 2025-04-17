@@ -30,6 +30,7 @@ public class QuestionController {
                                @Valid @RequestBody CreateQuestionDTO questionDTO) {
         questionService.insertQuestion(questionDTO, quizId);
     }
+
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     QuestionDTO getQuestionById(@PathVariable(value = "id") UUID questionId) {

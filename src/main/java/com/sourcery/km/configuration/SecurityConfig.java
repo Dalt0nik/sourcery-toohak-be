@@ -29,12 +29,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableConfigurationProperties({JwtProperties.class, AzureProperties.class})
 public class SecurityConfig {
 
-    /**
-     * Configuration for Spring JWT authentication logic
-     */
+    //Configuration for Spring JWT authentication logic
     @Bean
     @Order(1)
-    public SecurityFilterChain JwtFilterChain(
+    public SecurityFilterChain jwtFilterChain(
             HttpSecurity http,
             JwtAuthFilter jwtAuthFilter,
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
@@ -58,9 +56,8 @@ public class SecurityConfig {
                 .build();
     }
 
-    /**
-     * Configuration for Auth0 authentication logic
-     */
+
+    //Configuration for Auth0 authentication logic
     @Bean
     @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -91,9 +88,7 @@ public class SecurityConfig {
         return source;
     }
 
-    /**
-     * This makes sure that JwtAuthFilter is not applied everywhere
-     */
+    //This makes sure that JwtAuthFilter is not applied everywhere
     @Bean
     public FilterRegistrationBean<JwtAuthFilter> registerFilter(JwtAuthFilter jwtAuthFilter) {
         FilterRegistrationBean<JwtAuthFilter> filterRegistrationBean = new FilterRegistrationBean<>(jwtAuthFilter);

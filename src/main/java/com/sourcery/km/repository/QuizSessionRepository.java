@@ -18,7 +18,7 @@ public interface QuizSessionRepository {
 
     @Select("""
             SELECT * FROM quiz_sessions
-            WHERE join_id = #{join_id}
+            WHERE join_id = #{joinId}
             """)
-    QuizSession findSessionByJoinId(String join_id);
+    QuizSession findSessionByJoinId(String joinId);
 }
