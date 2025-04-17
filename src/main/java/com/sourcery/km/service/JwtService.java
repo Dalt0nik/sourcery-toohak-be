@@ -46,8 +46,8 @@ public class JwtService {
 
     public JoinSessionDTO createNewSession(QuizPlayerDTO anonymousUser) {
         return JoinSessionDTO.builder()
-                .tokenType(jwtProperties.tokenType)
-                .expiresInSeconds(String.valueOf(jwtProperties.expiresInSeconds))
+                .tokenType(JwtProperties.TOKENTYPE)
+                .expiresInSeconds(String.valueOf(jwtProperties.getExpiresInSeconds()))
                 .accessToken(generateAccessToken(anonymousUser))
                 .build();
     }
@@ -85,7 +85,8 @@ public class JwtService {
     private String createToken(Map<String, Object> claims, UUID anonymousUserId) {
         return Jwts.builder().claims(claims)
                 .subject(anonymousUserId.toString())
-                .issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + jwtProperties.expiresInSeconds * 1000L))
+                .issuedAt(new Date()).expiration(
+                        new Date(System.currentTimeMillis() + jwtProperties.getExpiresInSeconds() * 1000L))
                 .signWith(getSignKey())
                 .compact();
     }

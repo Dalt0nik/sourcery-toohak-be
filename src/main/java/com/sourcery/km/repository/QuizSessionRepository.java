@@ -6,8 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Mapper
 @Repository
 public interface QuizSessionRepository {
@@ -20,12 +18,7 @@ public interface QuizSessionRepository {
 
     @Select("""
             SELECT * FROM quiz_sessions
-            WHERE join_id = #{join_id}
+            WHERE join_id = #{joinId}
             """)
-    QuizSession findSessionByJoinId(String join_id);
-
-    @Select("""
-            SELECT u.id FROM quiz_sessions JOIN  u
-            """)
-    UUID findCreatorIdBySessionId(UUID sessionId);
+    QuizSession findSessionByJoinId(String joinId);
 }

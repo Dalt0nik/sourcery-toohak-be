@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.*;
  * 2. /find/{joinId} - People join using QR code or in website. Finds if the session is valid.
  * 3. /join - The person puts in the nickname and presses join. Receives a JWT.
  * 4. /start - Session owner starts the session and questions begin.
- * 5. /rejoin - if user is disconnected he can easily rejoin based on JWT
  */
 @RestController
 @RequestMapping("/sessions")
 @RequiredArgsConstructor
 public class QuizSessionController {
-
     private final QuizSessionService quizSessionService;
+
     private final JwtService jwtService;
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,18 +34,14 @@ public class QuizSessionController {
         return quizSessionService.getQuizSession(joinId);
     }
 
-    /**
-     * TODO: make handshake for websockets
-     */
+    // TODO: make handshake for websockets
     @PostMapping("/join")
     public JoinSessionDTO registerAnonymousUser(@RequestBody JoinSessionRequestDTO request) {
         QuizPlayerDTO anonymousUser = quizSessionService.joinSession(request);
         return jwtService.createNewSession(anonymousUser);
     }
 
-    /**
-     * TODO: send updates to all connected clients of websocket
-     */
+    // TODO: send updates to all connected clients of websocket
     @PostMapping("/start")
     public void start(@RequestBody StartSessionDTO session) {
         quizSessionService.startSession(session);
