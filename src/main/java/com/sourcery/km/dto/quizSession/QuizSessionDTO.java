@@ -20,4 +20,6 @@ public class QuizSessionDTO {
     Instant createdAt;
 
     UUID quizSessionId;
+
+    String createdBy;
 }
