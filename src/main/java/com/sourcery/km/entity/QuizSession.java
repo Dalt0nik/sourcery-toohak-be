@@ -23,6 +23,4 @@ public class QuizSession {
     private Instant createdAt;
 
     private UUID quizId;
-
-    private UUID createdBy;
 }

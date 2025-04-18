@@ -3,12 +3,8 @@ package com.sourcery.km.service;
 import com.sourcery.km.builder.quiz_player.QuizPlayerBuilder;
 import com.sourcery.km.builder.quiz_session.QuizSessionBuilder;
 import com.sourcery.km.dto.AnswerDTO;
-import com.sourcery.km.dto.UserInfoDTO;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
-import com.sourcery.km.dto.quizSession.CreateSessionDTO;
-import com.sourcery.km.dto.quizSession.JoinSessionRequestDTO;
-import com.sourcery.km.dto.quizSession.QuizSessionDTO;
-import com.sourcery.km.dto.quizSession.StartSessionDTO;
+import com.sourcery.km.dto.quizSession.*;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.entity.QuizPlayer;
 import com.sourcery.km.entity.QuizSession;
@@ -37,16 +33,13 @@ public class QuizSessionService {
 
     private final QuizPlayerRepository quizPlayerRepository;
 
-    private final UserService userService;
-
     public QuizSessionDTO createNewSession(CreateSessionDTO createSessionDTO) {
-        UserInfoDTO user = userService.getUserInfo();
         UUID quizId = createSessionDTO.getQuizId();
         Quiz quiz = quizService.getQuiz(quizId);
         if (quiz == null) {
             throw new BadRequestException("Quiz not found");
         }
-        QuizSession quizSession = QuizSessionBuilder.createQuizSession(quizId, user.getId(), createJoinId());
+        QuizSession quizSession = QuizSessionBuilder.createQuizSession(quizId, createJoinId());
         quizSessionRepository.insertNewSession(quizSession);
         return mapperService.map(quizSession, QuizSessionDTO.class);
     }
@@ -57,7 +50,7 @@ public class QuizSessionService {
     }
 
     public QuizSessionDTO getQuizSession(String joinId) {
-        QuizSession session = quizSessionRepository.findSessionByJoinId(joinId);
+        QuizSessionWithOwner session = quizSessionRepository.findSessionByJoinId(joinId);
         if (session == null) {
             throw new BadRequestException("Quiz session not found");
         }

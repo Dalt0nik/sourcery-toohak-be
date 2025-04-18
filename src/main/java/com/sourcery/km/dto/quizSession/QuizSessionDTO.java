@@ -21,5 +21,5 @@ public class QuizSessionDTO {
 
     UUID quizSessionId;
 
-    UUID createdBy;
+    String createdBy;
 }

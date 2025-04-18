@@ -1,6 +1,7 @@
 package com.sourcery.km.builder.quiz_session;
 
 import com.sourcery.km.dto.quizSession.QuizSessionDTO;
+import com.sourcery.km.dto.quizSession.QuizSessionWithOwner;
 import com.sourcery.km.entity.QuizSession;
 import com.sourcery.km.entity.QuizStatus;
 import jakarta.annotation.PostConstruct;
@@ -20,13 +21,12 @@ public class QuizSessionBuilder {
     @Autowired
     ModelMapper modelMapper;
 
-    public static QuizSession createQuizSession(UUID quizId, UUID userId, String joinId) {
+    public static QuizSession createQuizSession(UUID quizId, String joinId) {
         return QuizSession.builder()
                 .id(UUID.randomUUID())
                 .status(QuizStatus.ACTIVE)
                 .joinId(joinId)
                 .quizId(quizId)
-                .createdBy(userId)
                 .createdAt(Instant.now())
                 .build();
     }
@@ -35,6 +35,7 @@ public class QuizSessionBuilder {
     private void postConstruct() {
         configureDtoToEntity();
         configureEntityToDto();
+        configureEntityWithOwnerToDto();
     }
 
     private void configureDtoToEntity() {
@@ -53,6 +54,17 @@ public class QuizSessionBuilder {
             @Override
             protected void configure() {
                 map().setQuizSessionId(source.getId());
+            }
+        };
+        modelMapper.addMappings(createMap);
+    }
+
+    private void configureEntityWithOwnerToDto() {
+        PropertyMap<QuizSessionWithOwner, QuizSessionDTO> createMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setQuizSessionId(source.getId());
+                map().setCreatedBy(source.getAuth0Id());
             }
         };
         modelMapper.addMappings(createMap);
