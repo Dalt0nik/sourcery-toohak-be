@@ -52,6 +52,7 @@ public class SecurityConfig {
                             exceptionHandling.accessDeniedHandler(customAccessDeniedHandler);
                         }
                 )
+                // CSRF does not allow anonymous posts methods which we use for /sessions/join
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }

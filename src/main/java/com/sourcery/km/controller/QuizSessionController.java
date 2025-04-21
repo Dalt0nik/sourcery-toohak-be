@@ -50,7 +50,7 @@ public class QuizSessionController {
     //TODO: not implemented, currently used for testing. quizId should be removed later (has to be automated)
     @PostMapping("{sessionId}/nextQuestion")
     public void next(@PathVariable UUID sessionId, @RequestParam UUID quizId) {
-        quizSessionService.nextQuestion(sessionId,quizId);
+        quizSessionService.nextQuestion(sessionId, quizId);
     }
 
     //TODO: implement rejoin logic based on the spring jwt provided

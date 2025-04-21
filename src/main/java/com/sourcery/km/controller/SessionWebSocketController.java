@@ -15,6 +15,7 @@ import java.util.UUID;
 public class SessionWebSocketController {
 
     private final QuizSessionService quizSessionService;
+
     private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/quiz/{sessionId}/answer")

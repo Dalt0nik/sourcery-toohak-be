@@ -33,8 +33,6 @@ public class QuizSessionService {
 
     private final MapperService mapperService;
 
-    private final JwtService jwtService;
-
     private final QuizPlayerRepository quizPlayerRepository;
 
     public QuizSessionDTO createNewSession(CreateSessionDTO createSessionDTO) {
@@ -50,7 +48,8 @@ public class QuizSessionService {
 
     public void startSession(StartSessionDTO session) {
         // This part is not implemented fully
-        messagingTemplate.convertAndSend("/topic/session/" + session.getQuizSessionId() + "/players", "Game has started!");
+        messagingTemplate.convertAndSend("/topic/session/" + session.getQuizSessionId() +
+                "/players", "Game has started!");
     }
 
     public QuizSessionDTO getQuizSession(String joinId) {
@@ -72,14 +71,6 @@ public class QuizSessionService {
         );
 
         return mapperService.map(quizPlayer, QuizPlayerDTO.class);
-    }
-
-    public void sendQuestion(UUID sessionId, QuestionDTO questionDTO) {
-        var user = jwtService.getAnonymousUserInfo();
-        messagingTemplate.convertAndSend(
-                "/topic/session/" + sessionId + "/players",
-                questionDTO
-        );
     }
 
     public void nextQuestion(UUID sessionId, UUID quizId) {

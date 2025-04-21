@@ -1,10 +1,9 @@
 package com.sourcery.km.configuration;
 
+import com.sourcery.km.configuration.util.SessionAttributeUtil;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
-import com.sourcery.km.service.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -15,18 +14,17 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import java.time.Instant;
 import java.util.Map;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class WebSocketEventListener {
     private final SimpMessagingTemplate messagingTemplate;
-    private final JwtService jwtService;
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = headerAccessor.getDestination();
-        String connectionType = (String) headerAccessor.getSessionAttributes().get("connectionType");
+        String connectionType = SessionAttributeUtil.safelyGetSessionAttribute(headerAccessor, "connectionType");
 
         if (destination == null) {
             return;
@@ -39,7 +37,7 @@ public class WebSocketEventListener {
         }
         String quizSessionId = parts[3];
 
-        headerAccessor.getSessionAttributes().put("quizSessionId", quizSessionId);
+        SessionAttributeUtil.safelySetSessionAttribute(headerAccessor, "quizSessionId", quizSessionId);
 
         if ("player".equals(connectionType) && destination.matches("/topic/session/[^/]+/players")) {
             handlePlayerSubscription(headerAccessor, quizSessionId);
@@ -50,7 +48,7 @@ public class WebSocketEventListener {
     }
 
     private void handlePlayerSubscription(StompHeaderAccessor headerAccessor, String quizSessionId) {
-        QuizPlayerDTO player = (QuizPlayerDTO) headerAccessor.getSessionAttributes().get("player");
+        QuizPlayerDTO player = SessionAttributeUtil.safelyGetSessionAttribute(headerAccessor, "player");
 
         if (player != null) {
             // Notify host that player has joined
@@ -63,49 +61,48 @@ public class WebSocketEventListener {
                     )
             );
 
-            logger.info("Player {} joined session {}", player.getNickname(), quizSessionId);
+            log.info("Player {} joined session {}", player.getNickname(), quizSessionId);
         }
     }
 
     private void handleHostSubscription(StompHeaderAccessor headerAccessor, String quizSessionId) {
-        String userId = (String) headerAccessor.getSessionAttributes().get("userId");
+        String userId = SessionAttributeUtil.safelyGetSessionAttribute(headerAccessor, "userId");
 
-        if (userId != null) {
-            headerAccessor.getSessionAttributes().put("isHost", true);
-
-            logger.info("Host {} connected to session {}", userId, quizSessionId);
+        if (userId != null && headerAccessor.getSessionAttributes() != null) {
+            SessionAttributeUtil.safelySetSessionAttribute(headerAccessor, "isHost", true);
+            log.info("Host {} joined session {}", userId, quizSessionId);
         }
     }
 
     @EventListener
     public void handleSessionDisconnectEvent(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String quizSessionId = (String) headerAccessor.getSessionAttributes().get("quizSessionId");
+
+        String quizSessionId = SessionAttributeUtil.safelyGetSessionAttribute(headerAccessor, "quizSessionId");
 
         if (quizSessionId == null) {
             return;
         }
 
-        // TODO: test more, didn't work last time
         // Handle host disconnection
-        if (Boolean.TRUE.equals(headerAccessor.getSessionAttributes().get("isHost"))) {
-            String userId = (String) headerAccessor.getSessionAttributes().get("userId");
+        Boolean isHost = SessionAttributeUtil.safelyGetSessionAttribute(headerAccessor, "isHost");
+        if (Boolean.TRUE.equals(isHost)) {
+            String userId = SessionAttributeUtil.safelyGetSessionAttribute(headerAccessor, "userId");
             if (userId != null) {
                 messagingTemplate.convertAndSend(
                         "/topic/session/" + quizSessionId + "/all",
                         Map.of(
                                 "event", "host_disconnected",
-                                "userId", userId,
                                 "timestamp", Instant.now().toString()
                         )
                 );
 
-                logger.info("Host {} disconnected from session {}", userId, quizSessionId);
+                log.info("Host {} disconnected from session {}", userId, quizSessionId);
             }
         }
         // Handle player disconnection
         else {
-            QuizPlayerDTO player = (QuizPlayerDTO) headerAccessor.getSessionAttributes().get("player");
+            QuizPlayerDTO player = SessionAttributeUtil.safelyGetSessionAttribute(headerAccessor, "player");
             if (player != null) {
                 messagingTemplate.convertAndSend(
                         "/topic/session/" + quizSessionId + "/host",
@@ -116,7 +113,7 @@ public class WebSocketEventListener {
                         )
                 );
 
-                logger.info("Player {} disconnected from session {}", player.getNickname(), quizSessionId);
+                log.info("Player {} disconnected from session {}", player.getNickname(), quizSessionId);
             }
         }
     }
