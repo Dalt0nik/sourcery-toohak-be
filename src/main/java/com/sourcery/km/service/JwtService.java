@@ -30,6 +30,10 @@ public class JwtService {
         if (authentication == null || !(authentication.getPrincipal() instanceof String token)) {
             throw new UnauthorizedException("User not authenticated");
         }
+        return getPlayerFromToken(token);
+    }
+
+    public QuizPlayerDTO getPlayerFromToken(String token) {
         Claims claims = extractAllClaims(token);
 
         String quizSessionIdStr = claims.get("quizSessionId", String.class);

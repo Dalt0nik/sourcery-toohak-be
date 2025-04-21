@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * The session goes as following:
  * 1. /create - Quiz owner creates a session.
@@ -50,10 +52,10 @@ public class QuizSessionController {
         quizSessionService.startSession(session);
     }
 
-    //TODO: implement logic for sending answers and receive answers
-    @PostMapping("/send")
-    public void sendQuestion(@RequestBody NewQuestionDTO question) {
-        quizSessionService.sendNewQuestion(question);
+    //TODO: not implemented, currently used for testing. QuestionId should be removed later (has to be automated)
+    @PostMapping("{sessionId}/nextQuestion")
+    public void next(@PathVariable UUID sessionId, @RequestParam UUID quizId) {
+        quizSessionService.nextQuestion(sessionId,quizId);
     }
 
     //TODO: implement rejoin logic based on the spring jwt provided

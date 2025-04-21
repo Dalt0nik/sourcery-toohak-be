@@ -2,7 +2,8 @@ package com.sourcery.km.service;
 
 import com.sourcery.km.builder.quiz_player.QuizPlayerBuilder;
 import com.sourcery.km.builder.quiz_session.QuizSessionBuilder;
-import com.sourcery.km.dto.AnswerDTO;
+import com.sourcery.km.dto.question.QuestionDTO;
+import com.sourcery.km.dto.quizSession.AnswerDTO;
 import com.sourcery.km.dto.NewQuestionDTO;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
 import com.sourcery.km.dto.quizSession.CreateSessionDTO;
@@ -21,6 +22,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -52,7 +54,7 @@ public class QuizSessionService {
 
     public void startSession(StartSessionDTO session) {
         // This part is not implemented fully
-        messagingTemplate.convertAndSend("/topic/lobby/" + session.getQuizSessionId(), "Game has started!");
+        messagingTemplate.convertAndSend("/topic/session/" + session.getQuizSessionId() + "/players", "Game has started!");
     }
 
     public QuizSessionDTO getQuizSession(String joinId) {
@@ -66,21 +68,49 @@ public class QuizSessionService {
     public QuizPlayerDTO joinSession(JoinSessionRequestDTO joinSessionRequestDTO) {
         QuizPlayer quizPlayer = QuizPlayerBuilder.createQuizPlayer(joinSessionRequestDTO);
         quizPlayerRepository.insertNewPlayer(quizPlayer);
+
+        // Notify the host
+        messagingTemplate.convertAndSend(
+                "/topic/session/" + joinSessionRequestDTO.getQuizSessionId() + "/host",
+                Map.of("event", "player_joined", "player", joinSessionRequestDTO.getNickname())
+        );
+
         return mapperService.map(quizPlayer, QuizPlayerDTO.class);
     }
 
-    public void sendNewQuestion(NewQuestionDTO newQuestionDTO) {
+    public void sendQuestion(UUID sessionId, QuestionDTO questionDTO) {
         var user = jwtService.getAnonymousUserInfo();
-        // This part is not implemented fully
-        messagingTemplate.convertAndSend("/topic/lobby/" + user.getQuizSessionId(), newQuestionDTO);
+        messagingTemplate.convertAndSend(
+                "/topic/session/" + sessionId + "/players",
+                questionDTO
+        );
     }
 
-    public void processPlayerAnswer(AnswerDTO answer) {
+    public void nextQuestion(UUID sessionId, UUID quizId) {
+        // check whether user is the host
+        // apply session question switch logic
+        // call sendQuestion with the next question
+
+        // For testing send first question of passed quiz
+        QuestionDTO questionDTO = quizService.getQuizById(quizId).getQuestions().getFirst();
+
+        // TODO: assign quiz to session entity and choose questions based on it
+        // QuizSession session = quizSessionRepository.findSessionById(sessionId);
+
+
+        // Currently just testing ws:
+        messagingTemplate.convertAndSend(
+                "/topic/session/" + sessionId + "/players",
+                questionDTO
+        );
+    }
+
+    public void processPlayerAnswer(AnswerDTO answer, UUID sessionId) {
         // This part is not implemented
-        log.info("Lobby: {}, player: {}, answer: {}",
-                answer.getLobbyId(),
+        log.info("Session: {}, Player: {}, QuestionOption: {}",
+                sessionId,
                 answer.getPlayerId(),
-                answer.getAnswer());
+                answer.getQuestionOptionId());
     }
 
     private String createJoinId() {
