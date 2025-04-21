@@ -1,6 +1,5 @@
 package com.sourcery.km.controller;
 
-import com.sourcery.km.dto.NewQuestionDTO;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
 import com.sourcery.km.dto.quizSession.*;
 import com.sourcery.km.service.JwtService;

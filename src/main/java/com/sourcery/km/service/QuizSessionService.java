@@ -4,7 +4,6 @@ import com.sourcery.km.builder.quiz_player.QuizPlayerBuilder;
 import com.sourcery.km.builder.quiz_session.QuizSessionBuilder;
 import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.dto.quizSession.AnswerDTO;
-import com.sourcery.km.dto.NewQuestionDTO;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
 import com.sourcery.km.dto.quizSession.*;
 import com.sourcery.km.entity.Quiz;

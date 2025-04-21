@@ -32,7 +32,6 @@ public class WebSocketEventListener {
             return;
         }
 
-        logger.info("destination: {}", destination);
         // Extract quiz session ID from destination
         String[] parts = destination.split("/");
         if (parts.length < 4) {
@@ -87,6 +86,7 @@ public class WebSocketEventListener {
             return;
         }
 
+        // TODO: test more, didn't work last time
         // Handle host disconnection
         if (Boolean.TRUE.equals(headerAccessor.getSessionAttributes().get("isHost"))) {
             String userId = (String) headerAccessor.getSessionAttributes().get("userId");
