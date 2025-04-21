@@ -17,13 +17,11 @@ import java.util.UUID;
  * 2. /find/{joinId} - People join using QR code or in website. Finds if the session is valid.
  * 3. /join - The person puts in the nickname and presses join. Receives a JWT.
  * 4. /start - Session owner starts the session and questions begin.
- * 5. /rejoin - if user is disconnected he can easily rejoin based on JWT
  */
 @RestController
 @RequestMapping("/sessions")
 @RequiredArgsConstructor
 public class QuizSessionController {
-
     private final QuizSessionService quizSessionService;
 
     private final JwtService jwtService;

@@ -6,10 +6,7 @@ import com.sourcery.km.dto.question.QuestionDTO;
 import com.sourcery.km.dto.quizSession.AnswerDTO;
 import com.sourcery.km.dto.NewQuestionDTO;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
-import com.sourcery.km.dto.quizSession.CreateSessionDTO;
-import com.sourcery.km.dto.quizSession.JoinSessionRequestDTO;
-import com.sourcery.km.dto.quizSession.QuizSessionDTO;
-import com.sourcery.km.dto.quizSession.StartSessionDTO;
+import com.sourcery.km.dto.quizSession.*;
 import com.sourcery.km.entity.Quiz;
 import com.sourcery.km.entity.QuizPlayer;
 import com.sourcery.km.entity.QuizSession;
@@ -58,7 +55,7 @@ public class QuizSessionService {
     }
 
     public QuizSessionDTO getQuizSession(String joinId) {
-        QuizSession session = quizSessionRepository.findSessionByJoinId(joinId);
+        QuizSessionWithOwner session = quizSessionRepository.findSessionByJoinId(joinId);
         if (session == null) {
             throw new BadRequestException("Quiz session not found");
         }
