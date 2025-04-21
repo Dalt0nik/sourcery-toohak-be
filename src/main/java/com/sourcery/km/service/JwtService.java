@@ -48,6 +48,15 @@ public class JwtService {
                 .build();
     }
 
+    public boolean isPlayerToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return claims.containsKey("nickname") && claims.containsKey("quizSessionId");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public JoinSessionDTO createNewSession(QuizPlayerDTO anonymousUser) {
         return JoinSessionDTO.builder()
                 .tokenType(JwtProperties.TOKENTYPE)

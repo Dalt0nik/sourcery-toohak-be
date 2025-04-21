@@ -2,7 +2,6 @@ package com.sourcery.km.configuration;
 
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
 import com.sourcery.km.service.JwtService;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,61 +26,98 @@ public class WebSocketEventListener {
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = headerAccessor.getDestination();
+        String connectionType = (String) headerAccessor.getSessionAttributes().get("connectionType");
 
-        if (destination != null && destination.matches("/topic/quiz/[^/]+/players")) {
+        if (destination == null) {
+            return;
+        }
 
-            String[] parts = destination.split("/");
-            String quizSessionId = parts[3]; // Extract session ID from destination
+        logger.info("destination: {}", destination);
+        // Extract quiz session ID from destination
+        String[] parts = destination.split("/");
+        if (parts.length < 4) {
+            return;
+        }
+        String quizSessionId = parts[3];
 
-            // Get JWT from session attributes (stored during connect)
-            String jwt = (String) headerAccessor.getSessionAttributes().get("jwt");
+        headerAccessor.getSessionAttributes().put("quizSessionId", quizSessionId);
 
-            if (jwt != null) {
-                try {
-                    QuizPlayerDTO player = jwtService.getPlayerFromToken(jwt);
+        if ("player".equals(connectionType) && destination.matches("/topic/session/[^/]+/players")) {
+            handlePlayerSubscription(headerAccessor, quizSessionId);
+        }
+        else if ("host".equals(connectionType) && destination.matches("/topic/session/[^/]+/host")) {
+            handleHostSubscription(headerAccessor, quizSessionId);
+        }
+    }
 
-                    // Store player info for disconnect handling
-                    headerAccessor.getSessionAttributes().put("player", player);
-                    headerAccessor.getSessionAttributes().put("quizSessionId", quizSessionId);
+    private void handlePlayerSubscription(StompHeaderAccessor headerAccessor, String quizSessionId) {
+        QuizPlayerDTO player = (QuizPlayerDTO) headerAccessor.getSessionAttributes().get("player");
 
-                    // Notify host about new player
-                    messagingTemplate.convertAndSend(
-                            "/topic/quiz/" + quizSessionId + "/host",
-                            Map.of(
-                                    "event", "player_joined",
-                                    "player", player,
-                                    "timestamp", Instant.now().toString()
-                            )
-                    );
+        if (player != null) {
+            // Notify host that player has joined
+            messagingTemplate.convertAndSend(
+                    "/topic/session/" + quizSessionId + "/host",
+                    Map.of(
+                            "event", "player_joined",
+                            "player", player,
+                            "timestamp", Instant.now().toString()
+                    )
+            );
 
-                    logger.info("Player {} joined session {}", player.getNickname(), quizSessionId);
-                } catch (Exception e) {
-                    //TODO: handle exception
-                    logger.error("Error processing subscription: {}", e.getMessage());
-                }
-            }
+            logger.info("Player {} joined session {}", player.getNickname(), quizSessionId);
+        }
+    }
+
+    private void handleHostSubscription(StompHeaderAccessor headerAccessor, String quizSessionId) {
+        String userId = (String) headerAccessor.getSessionAttributes().get("userId");
+
+        if (userId != null) {
+            headerAccessor.getSessionAttributes().put("isHost", true);
+
+            logger.info("Host {} connected to session {}", userId, quizSessionId);
         }
     }
 
     @EventListener
     public void handleSessionDisconnectEvent(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        // Retrieve stored player info
-        QuizPlayerDTO player = (QuizPlayerDTO) headerAccessor.getSessionAttributes().get("player");
         String quizSessionId = (String) headerAccessor.getSessionAttributes().get("quizSessionId");
 
-        if (player != null && quizSessionId != null) {
-            messagingTemplate.convertAndSend(
-                    "/topic/quiz/" + quizSessionId + "/host",
-                    Map.of(
-                            "event", "player_disconnected",
-                            "player", player,
-                            "timestamp", Instant.now().toString()
-                    )
-            );
+        if (quizSessionId == null) {
+            return;
+        }
 
-            logger.info("Player {} disconnected from session {}", player.getNickname(), quizSessionId);
+        // Handle host disconnection
+        if (Boolean.TRUE.equals(headerAccessor.getSessionAttributes().get("isHost"))) {
+            String userId = (String) headerAccessor.getSessionAttributes().get("userId");
+            if (userId != null) {
+                messagingTemplate.convertAndSend(
+                        "/topic/session/" + quizSessionId + "/all",
+                        Map.of(
+                                "event", "host_disconnected",
+                                "userId", userId,
+                                "timestamp", Instant.now().toString()
+                        )
+                );
+
+                logger.info("Host {} disconnected from session {}", userId, quizSessionId);
+            }
+        }
+        // Handle player disconnection
+        else {
+            QuizPlayerDTO player = (QuizPlayerDTO) headerAccessor.getSessionAttributes().get("player");
+            if (player != null) {
+                messagingTemplate.convertAndSend(
+                        "/topic/session/" + quizSessionId + "/host",
+                        Map.of(
+                                "event", "player_disconnected",
+                                "player", player,
+                                "timestamp", Instant.now().toString()
+                        )
+                );
+
+                logger.info("Player {} disconnected from session {}", player.getNickname(), quizSessionId);
+            }
         }
     }
 }

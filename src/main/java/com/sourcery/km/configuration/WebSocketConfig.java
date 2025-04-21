@@ -1,8 +1,8 @@
 package com.sourcery.km.configuration;
 
+import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
 import com.sourcery.km.service.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -11,7 +11,6 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -47,27 +46,30 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+
                 // Intercept CONNECT message, which is the handshake
                 if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    // Extract token from connect headers
                     String authHeader = accessor.getFirstNativeHeader("Authorization");
                     if (authHeader != null && authHeader.startsWith("Bearer ")) {
                         String jwt = authHeader.substring(7);
 
                         try {
-                            // Validate JWT
-                            if (jwtService.validateToken(jwt)) {
-                                // Store JWT in session for later use
-                                accessor.getSessionAttributes().put("jwt", jwt);
+                            boolean isPlayerToken = jwtService.isPlayerToken(jwt);
 
-                                // Extract user ID and create authentication
-                                String userId = jwtService.extractId(jwt);
-
-                                // Set authentication for this session
-                                UsernamePasswordAuthenticationToken auth =
-                                        new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
-                                accessor.setUser(auth);
+                            if (isPlayerToken) {
+                                QuizPlayerDTO player = jwtService.getPlayerFromToken(jwt);
+                                accessor.getSessionAttributes().put("connectionType", "player");
+                                accessor.getSessionAttributes().put("player", player);
+                            } else {
+                                if (jwtService.validateToken(jwt)) {
+                                    String userId = jwtService.extractId(jwt);
+                                    accessor.getSessionAttributes().put("connectionType", "host");
+                                    accessor.getSessionAttributes().put("userId", userId);
+                                }
                             }
+
+                            // Store token for later use
+                            accessor.getSessionAttributes().put("jwt", jwt);
                         } catch (Exception e) {
                             //TODO: handle exception
                         }
