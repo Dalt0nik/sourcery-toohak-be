@@ -23,7 +23,7 @@ public class SessionWebSocketController {
 
         // Notify the host about the answer
         messagingTemplate.convertAndSend(
-                "/topic/quiz/" + sessionId + "/host",
+                "/topic/session/" + sessionId + "/host",
                 answer
         );
     }

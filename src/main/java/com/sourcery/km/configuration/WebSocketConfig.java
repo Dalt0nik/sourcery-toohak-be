@@ -3,6 +3,7 @@ package com.sourcery.km.configuration;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
 import com.sourcery.km.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -20,6 +21,7 @@ import java.util.Collections;
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
+@Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final JwtService jwtService;
 
@@ -71,7 +73,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                             // Store token for later use
                             accessor.getSessionAttributes().put("jwt", jwt);
                         } catch (Exception e) {
-                            //TODO: handle exception
+                            log.warn("WebSocket auth failed", e);
                         }
                     }
                 }

@@ -39,20 +39,18 @@ public class QuizSessionController {
         return quizSessionService.getQuizSession(joinId);
     }
 
-    //TODO: make handshake for websockets
     @PostMapping("/join")
     public JoinSessionDTO registerAnonymousUser(@RequestBody JoinSessionRequestDTO request) {
         QuizPlayerDTO anonymousUser = quizSessionService.joinSession(request);
         return jwtService.createNewSession(anonymousUser);
     }
 
-    //TODO: send updates to all connected clients of websocket
     @PostMapping("/start")
     public void start(@RequestBody StartSessionDTO session) {
         quizSessionService.startSession(session);
     }
 
-    //TODO: not implemented, currently used for testing. QuestionId should be removed later (has to be automated)
+    //TODO: not implemented, currently used for testing. quizId should be removed later (has to be automated)
     @PostMapping("{sessionId}/nextQuestion")
     public void next(@PathVariable UUID sessionId, @RequestParam UUID quizId) {
         quizSessionService.nextQuestion(sessionId,quizId);
