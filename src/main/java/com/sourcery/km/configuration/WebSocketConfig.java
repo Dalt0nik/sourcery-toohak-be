@@ -2,6 +2,7 @@ package com.sourcery.km.configuration;
 
 import com.sourcery.km.configuration.util.SessionAttributeUtil;
 import com.sourcery.km.dto.quizPlayer.QuizPlayerDTO;
+import com.sourcery.km.exception.WebSocketAuthenticationException;
 import com.sourcery.km.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,11 +14,11 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-
-import java.nio.charset.StandardCharsets;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -25,6 +26,8 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final JwtService jwtService;
+
+    private final JwtDecoder jwtDecoder;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -58,6 +61,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         try {
                             // Check if it's a player token
                             if (jwtService.isPlayerToken(jwt)) {
+                                if (!jwtService.validateToken(jwt)) {
+                                    throw new WebSocketAuthenticationException("Authentication failed:" +
+                                            " Invalid or expired token");
+                                }
+
                                 // Process player token
                                 QuizPlayerDTO player = jwtService.getPlayerFromToken(jwt);
                                 SessionAttributeUtil.safelySetSessionAttribute(accessor, "connectionType",
@@ -68,25 +76,21 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                                 log.info("Player connected: {}", player.getNickname());
                             } else {
-                                // For Auth0 tokens, just extract the sub claim
+                                // For Auth0 tokens, use Spring's JWT decoder
                                 try {
-                                    String[] parts = jwt.split("\\.");
-                                    String payload = new String(java.util.Base64.getUrlDecoder().decode(parts[1]),
-                                            StandardCharsets.UTF_8);
-                                    int subStart = payload.indexOf("\"sub\"");
-                                    if (subStart >= 0) {
-                                        subStart = payload.indexOf(":", subStart) + 1;
-                                        int subEnd = payload.indexOf("\"", subStart + 1);
-                                        String sub = payload.substring(subStart, subEnd).replace("\"", "").trim();
+                                    Jwt decodedJwt = jwtDecoder.decode(jwt);
+                                    String sub = decodedJwt.getSubject();
 
                                         SessionAttributeUtil.safelySetSessionAttribute(accessor, "connectionType",
                                                 "host");
                                         SessionAttributeUtil.safelySetSessionAttribute(accessor, "userId", sub);
 
                                         log.info("Host connected with ID: {}", sub);
-                                    }
                                 } catch (Exception e) {
-                                    log.error("Error parsing Auth0 token: {}", e.getMessage());
+                                    log.error("Error validating Auth0 token: {}",
+                                            e.getMessage());
+                                    throw new WebSocketAuthenticationException("Authentication failed:" +
+                                            " Invalid Auth0 token");
                                 }
                             }
                         } catch (Exception e) {
