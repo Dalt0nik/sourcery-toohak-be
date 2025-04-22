@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .securityMatcher("/ws/**", "/sessions/find/**", "/sessions/join")
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/sessions/**").permitAll()
                         .anyRequest().authenticated()
                 )

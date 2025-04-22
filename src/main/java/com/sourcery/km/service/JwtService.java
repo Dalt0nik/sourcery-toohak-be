@@ -30,6 +30,10 @@ public class JwtService {
         if (authentication == null || !(authentication.getPrincipal() instanceof String token)) {
             throw new UnauthorizedException("User not authenticated");
         }
+        return getPlayerFromToken(token);
+    }
+
+    public QuizPlayerDTO getPlayerFromToken(String token) {
         Claims claims = extractAllClaims(token);
 
         String quizSessionIdStr = claims.get("quizSessionId", String.class);
@@ -42,6 +46,15 @@ public class JwtService {
                 .nickname(nickname)
                 .quizSessionId(quizSessionId)
                 .build();
+    }
+
+    public boolean isPlayerToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return claims.containsKey("nickname") && claims.containsKey("quizSessionId");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public JoinSessionDTO createNewSession(QuizPlayerDTO anonymousUser) {
